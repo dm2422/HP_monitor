@@ -1,20 +1,6 @@
-from utils import broadcast, getNews, getNewsDetail
+from utils import check_update, render_message_text
 
-MESSAGE_TEMPLATE = \
-'''宇高のホームページが更新されました。
-
-{title}
-
-{content}
-
-記事のURLはこちらです。
-{url}
-'''
-
-
-for n in getNews():
-    # broadcast(MESSAGE_TEMPLATE.format(
-    #     **n,
-    #     content=getNewsDetail(n["url"])
-    # ))
-    pass
+for name, news_list in check_update().items():
+    for news in news_list:
+        # Replace broadcast() in production.
+        print(render_message_text(news, name))
