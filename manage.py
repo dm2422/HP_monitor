@@ -1,7 +1,5 @@
-import json
 from sys import argv
 
-from settings import HISTORY_JSON_PATH
 from utils import check_update
 
 
