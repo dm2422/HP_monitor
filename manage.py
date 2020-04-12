@@ -11,5 +11,5 @@ def cmd_init():
 
 
 if __name__ == "__main__":
-    if "init" in argv:
+    if argv[0] == "init":
         cmd_init()
