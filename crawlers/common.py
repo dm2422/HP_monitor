@@ -1,35 +1,18 @@
 from abc import ABCMeta, abstractmethod
+from dataclasses import dataclass, asdict
 from typing import List
 
 
+@dataclass
 class NewsHeader:
     origin_url: str
     title: str
     hash: str
 
-    def __init__(self, news_url: str, news_title: str, news_hash: str):
-        """
-        News header should not contain news content
-        :param news_url: The URL to news content.
-        :param news_title: News title.
-        :param news_hash: This is used for checking out uncrawled news.
-        """
-        self.origin_url = news_url
-        self.title = news_title
-        self.hash = news_hash
 
-
+@dataclass
 class News(NewsHeader):
     content: str
-
-    def __init__(self, header: NewsHeader, content: str):
-        """
-        News should contain news content.
-        :param header: This news header.
-        :param content: News content.
-        """
-        super().__init__(header.origin_url, header.title, header.hash)
-        self.content = content
 
 
 class CrawlerBase(metaclass=ABCMeta):
@@ -60,5 +43,5 @@ class CrawlerBase(metaclass=ABCMeta):
         """
         ret: List[News] = []
         for header in filter(lambda x: not x.hash in cached_hashes, self.fetch_recent_news_headers()):
-            ret.append(News(header, self.fetch_specific_news_content(header)))
+            ret.append(News(**asdict(header), content=self.fetch_specific_news_content(header)))
         return ret
