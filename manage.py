@@ -5,7 +5,7 @@ from utils import check_update
 
 
 def cmd_init():
-    with open(HISTORY_JSON_PATH, "w") as wf:
+    with open(HISTORY_JSON_PATH, "w", encoding="utf-8") as wf:
         wf.write("{}")
     check_update()
 
