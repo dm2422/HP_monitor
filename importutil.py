@@ -13,7 +13,8 @@ def get_all_crawler_classes() -> List[Type[CrawlerBase]]:
     for e in glob.glob(os.path.join(schools.__path__[0], "*.py")):
         if "__init__" in e:
             continue
-        module_name: str = e[e.rfind("\\") + 1: -3]
+        e = e.replace("\\", "/")
+        module_name: str = e[e.rfind("/") + 1: -3]
         crawler_module = importlib.import_module(f"crawlers.schools.{module_name}")
 
         clazz: Type[CrawlerBase]
