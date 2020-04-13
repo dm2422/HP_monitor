@@ -16,7 +16,3 @@ MESSAGE_TEMPLATE = \
     {url}'''
 
 CRAWLER_CLASSES: List[Type[CrawlerBase]] = get_all_crawler_classes()
-
-CHANNEL_TOKEN = "Bearer A826gnrm/xC5fRqoU4e68jq7QTUiFEs9hIgzgfBvn3EXllJvTwbs6guCg/zfhiLvDi/Ry" \
-                "+22GepsEx8zYCh5LdCXOlDYHCWsJpm+1qJTCzQ+HSSMuyBhsuZNjhsUTKcEEBhE2MLXZlW2M+djdOat2gdB04t89/1O" \
-                "/w1cDnyilFU= "

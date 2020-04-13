@@ -1,31 +1,8 @@
-import requests
 import json
 from typing import List, Dict
 
 from crawlers.common import News
-from settings import HISTORY_JSON_PATH, CRAWLER_CLASSES, CHANNEL_TOKEN, MESSAGE_TEMPLATE
-
-UTAKA_URL = "http://www.tochigi-edu.ed.jp/utsunomiya/nc2/"
-
-
-def broadcast(text: str) -> None:
-    api_url = "https://api.line.me/v2/bot/message/broadcast"
-
-    payload = {
-        "messages": [
-            {
-                "type": "text",
-                "text": text
-            }
-        ]
-    }
-
-    headers = {
-        "Authorization": CHANNEL_TOKEN,
-        "Content-Type": "application/json"
-    }
-
-    requests.post(api_url, headers=headers, json=payload)
+from settings import HISTORY_JSON_PATH, CRAWLER_CLASSES, MESSAGE_TEMPLATE
 
 
 def check_update() -> Dict[str, List[News]]:
