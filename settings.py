@@ -5,6 +5,8 @@ from importutil import get_all_crawler_classes
 
 HISTORY_JSON_PATH = "history.json"
 
+TOKENS_JSON_PATH = "tokens.json"
+
 MESSAGE_TEMPLATE = \
     '''{name}のホームページが更新されました。
 

@@ -1,8 +1,18 @@
+import json
+from dataclasses import dataclass
+
 import requests
 
-CHANNEL_TOKEN = "Bearer A826gnrm/xC5fRqoU4e68jq7QTUiFEs9hIgzgfBvn3EXllJvTwbs6guCg/zfhiLvDi/Ry" \
-                "+22GepsEx8zYCh5LdCXOlDYHCWsJpm+1qJTCzQ+HSSMuyBhsuZNjhsUTKcEEBhE2MLXZlW2M+djdOat2gdB04t89/1O" \
-                "/w1cDnyilFU= "
+from settings import TOKENS_JSON_PATH
+
+
+@dataclass
+class Line:
+    channel_token: str
+
+
+with open(TOKENS_JSON_PATH, "r", encoding="utf-8") as rf:
+    line_tokens = Line(**json.load(rf)["line"])
 
 
 def broadcast(text: str) -> None:
@@ -18,7 +28,7 @@ def broadcast(text: str) -> None:
     }
 
     headers = {
-        "Authorization": CHANNEL_TOKEN,
+        "Authorization": line_tokens.channel_token,
         "Content-Type": "application/json"
     }
 

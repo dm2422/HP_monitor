@@ -1,11 +1,29 @@
+import json
+from dataclasses import dataclass
+
 import tweepy
 
-CONSUMER_KEY = "3ZqrtNWdxN4ncSO9xt4JYhNAs"
-CONSUMER_SECRET_KEY = "A0gpo0fnqancEoB49edAPMQrCnypSaMnyGUOHLCfIDaHVYunmrz"
-ACCESS_TOKEN = "1248785120418361346-HNOywGyiTh7hdHwZbg941QhQUOwsnh"
-ACCESS_TOKEN_SECRET = "K1NCqigovmYvOfvkd0trE8XfsiBmyqxZbyLEiGxn1dfkw"
+from settings import TOKENS_JSON_PATH
 
-auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET_KEY)
-auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+
+@dataclass
+class Twitter:
+    consumer_key: str
+    consumer_secret: str
+    access_token: str
+    access_token_secret: str
+
+
+with open(TOKENS_JSON_PATH, "r", encoding="utf-8") as rf:
+    twitter_tokens = Twitter(**json.load(rf)["twitter"])
+
+auth = tweepy.OAuthHandler(
+    twitter_tokens.consumer_key,
+    twitter_tokens.consumer_secret
+)
+auth.set_access_token(
+    twitter_tokens.access_token,
+    twitter_tokens.access_token_secret
+)
 
 twitter_api = tweepy.API(auth)
