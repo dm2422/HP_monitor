@@ -14,9 +14,9 @@ def check_update() -> Dict[str, List[News]]:
     for crawler_class in CRAWLER_CLASSES:
         hashes: List[str] = history.get(crawler_class.SCHOOL_NAME, [])
         crawler = crawler_class()
-        least_news = crawler.get_least_news(hashes)
-        history[crawler_class.SCHOOL_NAME] = hashes + list(map(lambda x: x.hash, least_news))
-        crawled_news[crawler_class.SCHOOL_NAME] = least_news
+        latest_news = crawler.get_latest_news(hashes)
+        history[crawler_class.SCHOOL_NAME] = hashes + list(map(lambda x: x.hash, latest_news))
+        crawled_news[crawler_class.SCHOOL_NAME] = latest_news
 
     with open(HISTORY_JSON_PATH, "w", encoding="utf-8") as wf:
         json.dump(history, wf, indent=4, ensure_ascii=False)
