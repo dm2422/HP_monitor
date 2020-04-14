@@ -17,8 +17,9 @@ def get_all_crawler_classes() -> List[Type[CrawlerBase]]:
         module_name: str = e[e.rfind("/") + 1: -3]
         crawler_module = importlib.import_module(f"crawlers.schools.{module_name}")
 
-        clazz: Type[CrawlerBase]
+        clazz: type
         for clazz in map(lambda x: x[1], inspect.getmembers(crawler_module, inspect.isclass)):
             if CrawlerBase in clazz.__bases__:
+                clazz: Type[CrawlerBase]
                 ret.append(clazz)
     return ret

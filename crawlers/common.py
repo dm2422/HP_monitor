@@ -16,16 +16,8 @@ class News(NewsHeader):
 
 
 class CrawlerBase(metaclass=ABCMeta):
-
-    @property
-    @abstractmethod
-    def HP_URL(self) -> str:
-        pass
-
-    @property
-    @abstractmethod
-    def SCHOOL_NAME(self) -> str:
-        pass
+    HP_URL: str
+    SCHOOL_NAME: str
 
     @abstractmethod
     def fetch_recent_news_headers(self) -> List[NewsHeader]:
