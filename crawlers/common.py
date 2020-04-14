@@ -27,9 +27,9 @@ class CrawlerBase(metaclass=ABCMeta):
     def fetch_specific_news_content(self, news_header: NewsHeader) -> str:
         pass
 
-    def get_least_news(self, cached_hashes: List[str]) -> List[News]:
+    def get_latest_news(self, cached_hashes: List[str]) -> List[News]:
         """
-        In here, "least" means "not crawled before". So return type is list of uncrawled news.
+        In here, "latest" means "not crawled before". So return type is list of uncrawled news.
         :param cached_hashes: Hashes that crawled before.
         :return: List of before uncrawled news.
         """
