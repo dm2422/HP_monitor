@@ -1,4 +1,6 @@
 __pycache__
 .vscode
+.idea
 history.json
 tokens.json
+venv
