@@ -3,6 +3,7 @@ from dataclasses import dataclass
 
 import tweepy
 
+from crawlers.common import News
 from settings import TOKENS_JSON_PATH
 
 
@@ -27,3 +28,7 @@ auth.set_access_token(
 )
 
 twitter_api = tweepy.API(auth)
+
+
+def broadcast(news: News, school_name: str):
+    pass
