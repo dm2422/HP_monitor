@@ -2,8 +2,7 @@ import tweepy
 
 from API.tokens import twitter_tokens
 from crawlers.common import News
-from settings import MESSAGE_TEMPLATE
-from utils import render_text_default
+from utils import render_twitter_text
 
 auth = tweepy.OAuthHandler(
     twitter_tokens.consumer_key,
@@ -15,19 +14,6 @@ auth.set_access_token(
 )
 
 twitter_api = tweepy.API(auth)
-
-
-def render_twitter_text(news: News, school_name: str):
-    no_content_len = len(MESSAGE_TEMPLATE.format(
-        name=school_name,
-        title=news.title,
-        content="",
-        url=news.origin_url
-    ))
-    content_max_len = 140 - no_content_len
-    if content_max_len < len(news.content):
-        news.content = news.content[:content_max_len - 3] + "..."
-    return render_text_default(news, school_name)
 
 
 def broadcast(news: News, school_name: str):
