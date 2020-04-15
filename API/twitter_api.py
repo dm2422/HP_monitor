@@ -1,21 +1,8 @@
-import json
-from dataclasses import dataclass
-
 import tweepy
 
-from settings import TOKENS_JSON_PATH
-
-
-@dataclass
-class Twitter:
-    consumer_key: str
-    consumer_secret: str
-    access_token: str
-    access_token_secret: str
-
-
-with open(TOKENS_JSON_PATH, "r", encoding="utf-8") as rf:
-    twitter_tokens = Twitter(**json.load(rf)["twitter"])
+from API.tokens import twitter_tokens
+from crawlers.common import News
+from utils import render_twitter_text
 
 auth = tweepy.OAuthHandler(
     twitter_tokens.consumer_key,
@@ -27,3 +14,8 @@ auth.set_access_token(
 )
 
 twitter_api = tweepy.API(auth)
+
+
+def broadcast(news: News, school_name: str):
+    rendered_text = render_twitter_text(news, school_name)
+    twitter_api.update_status(rendered_text)

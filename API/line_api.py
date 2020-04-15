@@ -1,28 +1,19 @@
-import json
-from dataclasses import dataclass
-
 import requests
 
-from settings import TOKENS_JSON_PATH
+from API.tokens import line_tokens
+from crawlers.common import News
+from utils import render_text_default
 
 
-@dataclass
-class Line:
-    channel_token: str
-
-
-with open(TOKENS_JSON_PATH, "r", encoding="utf-8") as rf:
-    line_tokens = Line(**json.load(rf)["line"])
-
-
-def broadcast(text: str) -> None:
+def broadcast(news: News, school_name: str) -> None:
+    rendered_text = render_text_default(news, school_name)
     api_url = "https://api.line.me/v2/bot/message/broadcast"
 
     payload = {
         "messages": [
             {
                 "type": "text",
-                "text": text
+                "text": rendered_text
             }
         ]
     }
