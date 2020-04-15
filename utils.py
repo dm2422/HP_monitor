@@ -24,7 +24,7 @@ def check_update() -> Dict[str, List[News]]:
     return crawled_news
 
 
-def render_message_text(news: News, school_name: str) -> str:
+def render_text_default(news: News, school_name: str) -> str:
     return MESSAGE_TEMPLATE.format(
         name=school_name,
         title=news.title,

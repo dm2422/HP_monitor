@@ -5,7 +5,7 @@ import requests
 
 from crawlers.common import News
 from settings import TOKENS_JSON_PATH
-from utils import render_message_text
+from utils import render_text_default
 
 
 @dataclass
@@ -18,7 +18,7 @@ with open(TOKENS_JSON_PATH, "r", encoding="utf-8") as rf:
 
 
 def broadcast(news: News, school_name: str) -> None:
-    rendered_text = render_message_text(news, school_name)
+    rendered_text = render_text_default(news, school_name)
     api_url = "https://api.line.me/v2/bot/message/broadcast"
 
     payload = {
