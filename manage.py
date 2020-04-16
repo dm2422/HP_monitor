@@ -4,7 +4,7 @@ from settings import HISTORY_JSON_PATH
 from utils import check_update
 
 
-def cmd_init():
+def cmd_init() -> None:
     with open(HISTORY_JSON_PATH, "w", encoding="utf-8") as wf:
         wf.write("{}")
     check_update()
