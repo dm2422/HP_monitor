@@ -26,3 +26,12 @@ def get_all_crawler_classes() -> List[Type[CrawlerBase]]:
                 clazz: Type[CrawlerBase]
                 ret.append(clazz)
     return ret
+
+
+def load_tokens(tokens_json_path=TOKENS_JSON_PATH) -> Dict[str, CoordinateValue]:
+    with open(tokens_json_path, "r", encoding="utf-8") as rf:
+        tokens_ = json.load(rf)
+
+    tokens_ = coordinate_from_dict(tokens_)
+
+    return tokens_
