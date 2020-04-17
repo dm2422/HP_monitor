@@ -19,7 +19,7 @@ def broadcast(news: News, school_name: str) -> None:
     }
 
     headers = {
-        "Authorization": line_tokens.channel_token,
+        "Authorization": "Bearer " + line_tokens.channel_token,
         "Content-Type": "application/json"
     }
 
