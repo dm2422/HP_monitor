@@ -1,6 +1,6 @@
 from sys import argv
 
-from settings import HISTORY_JSON_PATH
+from const_settings import HISTORY_JSON_PATH
 from utils import check_update
 
 

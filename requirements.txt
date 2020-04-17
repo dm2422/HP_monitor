@@ -11,3 +11,4 @@ soupsieve==2.0
 tweepy==3.8.0
 urllib3==1.25.8
 Faker==4.0.3
+jaconv==0.2.4
