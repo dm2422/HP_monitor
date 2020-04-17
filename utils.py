@@ -1,6 +1,8 @@
 import json
 from typing import List, Dict
 
+import jaconv
+
 from const_settings import HISTORY_JSON_PATH, MESSAGE_TEMPLATE
 from crawlers.common import News
 from settings import CRAWLER_CLASSES
@@ -29,7 +31,7 @@ def render_text_default(news: News, school_name: str) -> str:
     return MESSAGE_TEMPLATE.format(
         name=school_name,
         title=news.title,
-        content=news.content,
+        content=jaconv.zen2han(news.content, digit=True, ascii=True, kana=False),
         url=news.origin_url
     )
 
