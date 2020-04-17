@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "type": "object",
+  "additionalProperties": {
+    "type": "object",
+    "description": "学校名です。クラスで設定した名前と一致させる必要があります。",
+    "properties": {
+      "twitter": {
+        "type": "object",
+        "description": "Twitterのアクセストークンです。",
+        "properties": {
+          "consumer_key": {
+            "type": "string"
+          },
+          "consumer_secret": {
+            "type": "string"
+          },
+          "access_token": {
+            "type": "string"
+          },
+          "access_token_secret": {
+            "type": "string"
+          }
+        }
+      },
+      "line": {
+        "type": "object",
+        "description": "LINEのアクセストークンです。",
+        "properties": {
+          "channel_token": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
