@@ -24,9 +24,10 @@ class TwitterRenderingTest(unittest.TestCase):
         self.assertLessEqual(len(rendered_text), 140)
 
     def test_round_max_len(self):
+        fake_uri = fake.uri() + fake.uri_path(20)
         news = News(
             title=fake.company(),
-            origin_url=fake.uri(),
+            origin_url=fake_uri,
             hash=fake.sha1(),
             content=fake.text(200)
         )
@@ -34,4 +35,4 @@ class TwitterRenderingTest(unittest.TestCase):
             news=news,
             school_name=fake.company()
         )
-        self.assertEqual(len(rendered_text), 140)
+        self.assertLessEqual(len(rendered_text) - (len(fake_uri) - 24), 140)

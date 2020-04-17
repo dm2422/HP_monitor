@@ -39,8 +39,8 @@ def render_twitter_text(news: News, school_name: str) -> str:
         name=school_name,
         title=news.title,
         content="",
-        url=news.origin_url
-    ))
+        url=""
+    )) + 24  # URL is always counted as 22~24 characters.
     content_max_len = 140 - no_content_len
     if content_max_len < len(news.content):
         news.content = news.content[:content_max_len - 3] + "..."
