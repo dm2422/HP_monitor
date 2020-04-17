@@ -1,3 +1,5 @@
+import copy
+
 import tweepy
 
 from crawlers.common import News
@@ -17,5 +19,5 @@ def broadcast(news: News, school_name: str) -> None:
     )
 
     twitter_api = tweepy.API(auth)
-    rendered_text = render_twitter_text(news, school_name)
+    rendered_text = render_twitter_text(copy.copy(news), school_name)
     twitter_api.update_status(rendered_text)
