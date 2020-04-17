@@ -1,8 +1,9 @@
 import json
 from typing import List, Dict
 
+from const_settings import HISTORY_JSON_PATH, MESSAGE_TEMPLATE
 from crawlers.common import News
-from settings import HISTORY_JSON_PATH, CRAWLER_CLASSES, MESSAGE_TEMPLATE
+from settings import CRAWLER_CLASSES
 
 
 def check_update() -> Dict[str, List[News]]:

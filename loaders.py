@@ -1,9 +1,12 @@
 import glob
 import importlib
 import inspect
+import json
 import os
-from typing import List, Type
+from typing import List, Type, Dict
 
+from API.structs import coordinate_from_dict, CoordinateValue
+from const_settings import TOKENS_JSON_PATH
 from crawlers import schools
 from crawlers.common import CrawlerBase
 

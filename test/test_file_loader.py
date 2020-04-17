@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from settings import HISTORY_JSON_PATH, TOKENS_JSON_PATH
+from const_settings import HISTORY_JSON_PATH, TOKENS_JSON_PATH
 
 
 class FileLoader(unittest.TestCase):
