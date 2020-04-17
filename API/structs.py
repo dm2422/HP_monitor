@@ -7,7 +7,7 @@
 #     result = coordinate_from_dict(json.loads(json_string))
 
 from dataclasses import dataclass
-from typing import Optional, Any, Dict, TypeVar, Type, cast, Callable
+from typing import Any, Optional, Dict, TypeVar, Type, cast, Callable
 
 T = TypeVar("T")
 
@@ -44,34 +44,34 @@ def from_dict(f: Callable[[Any], T], x: Any) -> Dict[str, T]:
 @dataclass
 class Line:
     """LINEのアクセストークンです。"""
-    channel_token: Optional[str] = None
+    channel_token: str
 
     @staticmethod
     def from_dict(obj: Any) -> 'Line':
         assert isinstance(obj, dict)
-        channel_token = from_union([from_str, from_none], obj.get("channel_token"))
+        channel_token = from_str(obj.get("channel_token"))
         return Line(channel_token)
 
     def to_dict(self) -> dict:
-        result: dict = {"channel_token": from_union([from_str, from_none], self.channel_token)}
+        result: dict = {"channel_token": from_str(self.channel_token)}
         return result
 
 
 @dataclass
 class Twitter:
     """Twitterのアクセストークンです。"""
-    access_token: Optional[str] = None
-    access_token_secret: Optional[str] = None
-    consumer_key: Optional[str] = None
-    consumer_secret: Optional[str] = None
+    access_token: str
+    access_token_secret: str
+    consumer_key: str
+    consumer_secret: str
 
     @staticmethod
     def from_dict(obj: Any) -> 'Twitter':
         assert isinstance(obj, dict)
-        access_token = from_union([from_str, from_none], obj.get("access_token"))
-        access_token_secret = from_union([from_str, from_none], obj.get("access_token_secret"))
-        consumer_key = from_union([from_str, from_none], obj.get("consumer_key"))
-        consumer_secret = from_union([from_str, from_none], obj.get("consumer_secret"))
+        access_token = from_str(obj.get("access_token"))
+        access_token_secret = from_str(obj.get("access_token_secret"))
+        consumer_key = from_str(obj.get("consumer_key"))
+        consumer_secret = from_str(obj.get("consumer_secret"))
         return Twitter(access_token, access_token_secret, consumer_key, consumer_secret)
 
     def to_dict(self) -> dict:

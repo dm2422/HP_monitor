@@ -8,6 +8,12 @@
       "twitter": {
         "type": "object",
         "description": "Twitterのアクセストークンです。",
+        "required": [
+          "consumer_key",
+          "consumer_secret",
+          "access_token",
+          "access_token_secret"
+        ],
         "properties": {
           "consumer_key": {
             "type": "string"
@@ -26,6 +32,9 @@
       "line": {
         "type": "object",
         "description": "LINEのアクセストークンです。",
+        "required": [
+          "channel_token"
+        ],
         "properties": {
           "channel_token": {
             "type": "string"
