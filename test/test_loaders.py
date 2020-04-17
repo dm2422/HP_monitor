@@ -1,7 +1,8 @@
 import json
 import unittest
 
-from settings import HISTORY_JSON_PATH, TOKENS_JSON_PATH
+from const_settings import HISTORY_JSON_PATH, TOKENS_JSON_PATH
+from loaders import load_tokens
 
 
 class FileLoader(unittest.TestCase):
@@ -22,3 +23,9 @@ class FileLoader(unittest.TestCase):
             tokens = json.load(rf)
         self.assertIsNotNone(tokens)
         self.assertIsInstance(tokens, dict)
+
+    def test_tokens_loader(self):
+        tokens = load_tokens()
+        for k, v in tokens.items():
+            self.assertIsInstance(k, str)
+            self.assertIsNotNone(v)

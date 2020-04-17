@@ -1,7 +1,7 @@
 import requests
 
-from API.tokens import line_tokens
 from crawlers.common import News
+from settings import TOKENS
 from utils import render_text_default
 
 
@@ -19,7 +19,7 @@ def broadcast(news: News, school_name: str) -> None:
     }
 
     headers = {
-        "Authorization": "Bearer " + line_tokens.channel_token,
+        "Authorization": "Bearer " + TOKENS[school_name].line.channel_token,
         "Content-Type": "application/json"
     }
 

@@ -1,20 +1,8 @@
 from typing import Type, List
 
 from crawlers.common import CrawlerBase
-from importutil import get_all_crawler_classes
-
-HISTORY_JSON_PATH = "history.json"
-
-TOKENS_JSON_PATH = "tokens.json"
-
-MESSAGE_TEMPLATE = \
-    '''{name}のホームページが更新されました。
-
-    {title}
-
-    {content}
-
-    記事のURLはこちらです。
-    {url}'''
+from loaders import get_all_crawler_classes, load_tokens
 
 CRAWLER_CLASSES: List[Type[CrawlerBase]] = get_all_crawler_classes()
+
+TOKENS = load_tokens()
