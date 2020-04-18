@@ -1,3 +1,5 @@
+from typing import Callable
+
 import requests
 
 from crawlers.common import News
@@ -5,7 +7,7 @@ from settings import TOKENS
 from utils import render_text_default
 
 
-def broadcast(news: News, school_name: str) -> None:
+def broadcast_prod(news: News, school_name: str) -> None:
     rendered_text = render_text_default(news, school_name)
     api_url = "https://api.line.me/v2/bot/message/broadcast"
 
@@ -24,3 +26,10 @@ def broadcast(news: News, school_name: str) -> None:
     }
 
     requests.post(api_url, headers=headers, json=payload)
+
+
+def broadcast_debug(news: News, school_name: str) -> None:
+    print(f"[LINE BC]: {school_name=}, {news=}")
+
+
+broadcast: Callable[[News, str], None] = broadcast_debug if __debug__ else broadcast_prod
