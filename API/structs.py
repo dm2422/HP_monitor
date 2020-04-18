@@ -4,12 +4,14 @@
 #
 # and then, to convert JSON from a string, do
 #
-#     result = coordinate_from_dict(json.loads(json_string))
+#     result = tokens_from_dict(json.loads(json_string))
 
 from dataclasses import dataclass
-from typing import Any, Optional, Dict, TypeVar, Type, cast, Callable
+from enum import Enum
+from typing import Any, Union, Dict, TypeVar, Type, cast, Callable
 
 T = TypeVar("T")
+EnumT = TypeVar("EnumT", bound=Enum)
 
 
 def from_str(x: Any) -> str:
@@ -36,6 +38,11 @@ def to_class(c: Type[T], x: Any) -> dict:
     return cast(Any, x).to_dict()
 
 
+def to_enum(c: Type[EnumT], x: Any) -> EnumT:
+    assert isinstance(x, c)
+    return x.value
+
+
 def from_dict(f: Callable[[Any], T], x: Any) -> Dict[str, T]:
     assert isinstance(x, dict)
     return {k: f(v) for (k, v) in x.items()}
@@ -43,7 +50,7 @@ def from_dict(f: Callable[[Any], T], x: Any) -> Dict[str, T]:
 
 @dataclass
 class Line:
-    """LINEのアクセストークンです。"""
+    """LINEのアクセストークンです。指定しなかった場合配信は行われません。"""
     channel_token: str
 
     @staticmethod
@@ -57,9 +64,13 @@ class Line:
         return result
 
 
+class LineEnum(Enum):
+    USE_SHARED = "use_shared"
+
+
 @dataclass
 class Twitter:
-    """Twitterのアクセストークンです。"""
+    """Twitterのアクセストークンです。指定しなかった場合配信は行われません。"""
     access_token: str
     access_token_secret: str
     consumer_key: str
@@ -75,37 +86,39 @@ class Twitter:
         return Twitter(access_token, access_token_secret, consumer_key, consumer_secret)
 
     def to_dict(self) -> dict:
-        result: dict = {"access_token": from_union([from_str, from_none], self.access_token),
-                        "access_token_secret": from_union([from_str, from_none], self.access_token_secret),
-                        "consumer_key": from_union([from_str, from_none], self.consumer_key),
-                        "consumer_secret": from_union([from_str, from_none], self.consumer_secret)}
+        result: dict = {"access_token": from_str(self.access_token),
+                        "access_token_secret": from_str(self.access_token_secret),
+                        "consumer_key": from_str(self.consumer_key), "consumer_secret": from_str(self.consumer_secret)}
         return result
 
 
 @dataclass
-class CoordinateValue:
-    """学校名です。クラスで設定した名前と一致させる必要があります。"""
-    """LINEのアクセストークンです。"""
-    line: Optional[Line] = None
-    """Twitterのアクセストークンです。"""
-    twitter: Optional[Twitter] = None
+class Shared:
+    """共有用のトークンです。設定されている場合、こちらのトークンを使用します。
+
+    それぞれのトークンです。学校名はクラスで設定した名前と一致させる必要があります。
+    """
+    line: Union[Line, LineEnum, None]
+    twitter: Union[Twitter, LineEnum, None]
 
     @staticmethod
-    def from_dict(obj: Any) -> 'CoordinateValue':
+    def from_dict(obj: Any) -> 'Shared':
         assert isinstance(obj, dict)
-        line = from_union([Line.from_dict, from_none], obj.get("line"))
-        twitter = from_union([Twitter.from_dict, from_none], obj.get("twitter"))
-        return CoordinateValue(line, twitter)
+        line = from_union([Line.from_dict, from_none, LineEnum], obj.get("line"))
+        twitter = from_union([Twitter.from_dict, from_none, LineEnum], obj.get("twitter"))
+        return Shared(line, twitter)
 
     def to_dict(self) -> dict:
-        result: dict = {"line": from_union([lambda x: to_class(Line, x), from_none], self.line),
-                        "twitter": from_union([lambda x: to_class(Twitter, x), from_none], self.twitter)}
+        result: dict = {
+            "line": from_union([lambda x: to_class(Line, x), from_none, lambda x: to_enum(LineEnum, x)], self.line),
+            "twitter": from_union([lambda x: to_class(Twitter, x), from_none, lambda x: to_enum(LineEnum, x)],
+                                  self.twitter)}
         return result
 
 
-def coordinate_from_dict(s: Any) -> Dict[str, CoordinateValue]:
-    return from_dict(CoordinateValue.from_dict, s)
+def tokens_from_dict(s: Any) -> Dict[str, Shared]:
+    return from_dict(Shared.from_dict, s)
 
 
-def coordinate_to_dict(x: Dict[str, CoordinateValue]) -> Any:
-    return from_dict(lambda x: to_class(CoordinateValue, x), x)
+def tokens_to_dict(x: Dict[str, Shared]) -> Any:
+    return from_dict(lambda x: to_class(Shared, x), x)
