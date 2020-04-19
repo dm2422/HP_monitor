@@ -10,10 +10,8 @@ def initialize_logger():
 if __name__ == "__main__":
     initialize_logger()
 
-    from API.service import line, twitter
-    from utils import check_update
+    from utils import check_update, broadcast_all
 
     for school_name, news_list in check_update().items():
         for news in news_list:
-            line.broadcast(news, school_name)
-            twitter.broadcast(news, school_name)
+            broadcast_all(news, school_name)
