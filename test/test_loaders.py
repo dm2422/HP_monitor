@@ -71,7 +71,7 @@ class FileLoader(unittest.TestCase):
 
         for clazz in get_all_api_classes():
             for school_name, tokens_set in test_tokens.items():
-                agent_tokens = tokens_set[clazz.JSON_KEY]
+                agent_tokens = tokens_set.get(clazz.JSON_KEY, None)
                 if agent_tokens == "use_shared":
                     self.assertEqual(clazz().get_agent_tokens(school_name, test_tokens),
                                      shared_tokens[clazz.JSON_KEY])
