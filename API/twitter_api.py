@@ -3,7 +3,7 @@ from typing import Optional
 
 import tweepy
 
-from API.structs import Twitter, LineEnum
+from API.structs import Twitter, TokenOptionsEnum
 from crawlers.common import News
 from settings import TOKENS
 from utils import render_twitter_text
@@ -11,10 +11,10 @@ from utils import render_twitter_text
 
 def get_twitter_tokens(school_name: str) -> Optional[Twitter]:
     tokens = TOKENS[school_name].twitter
-    if tokens == LineEnum.USE_SHARED:
+    if tokens == TokenOptionsEnum.USE_SHARED:
         tokens = TOKENS["shared"].twitter
 
-    assert not isinstance(tokens, LineEnum)
+    assert not isinstance(tokens, TokenOptionsEnum)
     return tokens
 
 

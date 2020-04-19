@@ -64,7 +64,7 @@ class Line:
         return result
 
 
-class LineEnum(Enum):
+class TokenOptionsEnum(Enum):
     USE_SHARED = "use_shared"
 
 
@@ -98,20 +98,21 @@ class Shared:
 
     それぞれのトークンです。学校名はクラスで設定した名前と一致させる必要があります。
     """
-    line: Union[Line, LineEnum, None]
-    twitter: Union[Twitter, LineEnum, None]
+    line: Union[Line, TokenOptionsEnum, None]
+    twitter: Union[Twitter, TokenOptionsEnum, None]
 
     @staticmethod
     def from_dict(obj: Any) -> 'Shared':
         assert isinstance(obj, dict)
-        line = from_union([Line.from_dict, from_none, LineEnum], obj.get("line"))
-        twitter = from_union([Twitter.from_dict, from_none, LineEnum], obj.get("twitter"))
+        line = from_union([Line.from_dict, from_none, TokenOptionsEnum], obj.get("line"))
+        twitter = from_union([Twitter.from_dict, from_none, TokenOptionsEnum], obj.get("twitter"))
         return Shared(line, twitter)
 
     def to_dict(self) -> dict:
         result: dict = {
-            "line": from_union([lambda x: to_class(Line, x), from_none, lambda x: to_enum(LineEnum, x)], self.line),
-            "twitter": from_union([lambda x: to_class(Twitter, x), from_none, lambda x: to_enum(LineEnum, x)],
+            "line": from_union([lambda x: to_class(Line, x), from_none, lambda x: to_enum(TokenOptionsEnum, x)],
+                               self.line),
+            "twitter": from_union([lambda x: to_class(Twitter, x), from_none, lambda x: to_enum(TokenOptionsEnum, x)],
                                   self.twitter)}
         return result
 
