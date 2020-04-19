@@ -3,16 +3,17 @@ import copy
 import tweepy
 
 from API.common import APIBase
+from API.structs import Twitter
 from crawlers.common import News
 from renderers import render_twitter_text
 
 
 class TwitterAPI(APIBase):
-    DEBUG_NAME = __name__
-    KEY_NAME = "twitter"
+    LOGGING_NAME = __name__
+    JSON_KEY = "twitter"
 
     def broadcast_prod(self, news: News, school_name: str) -> None:
-        twitter_tokens = self.get_tokens(school_name)
+        twitter_tokens: Twitter = self.get_agent_tokens(school_name)
         if not twitter_tokens:
             return
         auth = tweepy.OAuthHandler(

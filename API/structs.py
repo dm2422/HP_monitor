@@ -93,20 +93,19 @@ class Twitter:
 
 
 @dataclass
-class TokensSet:
-    """共有用のトークンです。設定されている場合、こちらのトークンを使用します。
-
-    それぞれのトークンです。学校名はクラスで設定した名前と一致させる必要があります。
+class TokenSet:
+    """
+    一つの学校のトークンをまとめたものです。各サービスのトークンはすべてここに入ります。
     """
     line: Union[Line, TokenOptionsEnum, None]
     twitter: Union[Twitter, TokenOptionsEnum, None]
 
     @staticmethod
-    def from_dict(obj: Any) -> 'TokensSet':
+    def from_dict(obj: Any) -> 'TokenSet':
         assert isinstance(obj, dict)
         line = from_union([Line.from_dict, from_none, TokenOptionsEnum], obj.get("line"))
         twitter = from_union([Twitter.from_dict, from_none, TokenOptionsEnum], obj.get("twitter"))
-        return TokensSet(line, twitter)
+        return TokenSet(line, twitter)
 
     def to_dict(self) -> dict:
         result: dict = {
@@ -117,9 +116,17 @@ class TokensSet:
         return result
 
 
-def tokens_from_dict(s: Any) -> Dict[str, TokensSet]:
-    return from_dict(TokensSet.from_dict, s)
+Tokens = Dict[str, TokenSet]
 
 
-def tokens_to_dict(x: Dict[str, TokensSet]) -> Any:
-    return from_dict(lambda x: to_class(TokensSet, x), x)
+def tokens_from_dict(s: Any) -> Tokens:
+    """
+    辞書型からTokensを生成します。TokensとはDict[学校名, TokenSet]のことです。
+    :param s: Target dictionary
+    :return:
+    """
+    return from_dict(TokenSet.from_dict, s)
+
+
+def tokens_to_dict(x: Dict[str, TokenSet]) -> Any:
+    return from_dict(lambda x: to_class(TokenSet, x), x)

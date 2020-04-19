@@ -5,10 +5,10 @@ import unittest
 
 from faker import Faker
 
+from API.common import get_all_api_classes
 from API.structs import TokenOptionsEnum
 from const_settings import HISTORY_JSON_PATH, TOKENS_JSON_PATH
 from loaders import load_tokens
-from settings import API_AGENT_CLASSES
 
 fake = Faker("ja-JP")
 
@@ -70,10 +70,10 @@ class FileLoader(unittest.TestCase):
         test_tokens = load_tokens(self.TEST_TOKENS_JSON_PATH)
         shared_tokens = test_tokens["shared"]
 
-        for clazz in API_AGENT_CLASSES:
+        for clazz in get_all_api_classes():
             for school_name, tokens_set in test_tokens.items():
-                if getattr(tokens_set, clazz.KEY_NAME) == TokenOptionsEnum.USE_SHARED:
-                    self.assertEqual(clazz().get_tokens(school_name, test_tokens),
-                                     getattr(shared_tokens, clazz.KEY_NAME))
-                elif getattr(tokens_set, clazz.KEY_NAME) is None:
-                    self.assertIsNone(clazz().get_tokens(school_name, test_tokens))
+                if getattr(tokens_set, clazz.JSON_KEY) == TokenOptionsEnum.USE_SHARED:
+                    self.assertEqual(clazz().get_agent_tokens(school_name, test_tokens),
+                                     getattr(shared_tokens, clazz.JSON_KEY))
+                elif getattr(tokens_set, clazz.JSON_KEY) is None:
+                    self.assertIsNone(clazz().get_agent_tokens(school_name, test_tokens))

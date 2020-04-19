@@ -6,26 +6,45 @@ from abc import ABCMeta, abstractmethod
 from logging import getLogger
 from typing import Callable, List, Type
 
-from API import service
+from API import agents
 from API.structs import TokenOptionsEnum
-from API.tokens import TOKENS
 from crawlers.common import News
+from settings import TOKEN_TABLE
 
 
 class APIBase(metaclass=ABCMeta):
-    DEBUG_NAME: str
-    KEY_NAME: str
+    LOGGING_NAME: str
+    JSON_KEY: str
+    SHARED_NAME = "shared"
 
     def __init__(self):
-        self.logger = getLogger(self.DEBUG_NAME)
+        self.logger = getLogger(self.LOGGING_NAME)
 
-    def get_tokens(self, school_name: str, tokens=TOKENS):
-        api_tokens = getattr(tokens[school_name], self.KEY_NAME)
-        if api_tokens == TokenOptionsEnum.USE_SHARED:
-            api_tokens = getattr(tokens["shared"], self.KEY_NAME)
+    def get_agent_tokens(self, school_name: str, token_table=TOKEN_TABLE):
+        """
+        指定した学校名のトークンを取得します。取得するトークンはこのクラスのエージェントのトークンのみです。
+        戻り値は直接アクセスすることができます。
+        (例)
+        [json]
+        "some_service": {
+            "bot_token": "abc",
+            "bot_token_secret": "123"
+        }
+        [python]
+        self.get_agent_tokens().bot_token
+        >> "abc"
+        self.get_agent_tokens().bot_token_secret
+        >> "123"
+        :param school_name: 学校名
+        :param token_table: [デバッグ用]使用するトークンテーブルを指定します。
+        :return:トークンのdataclassです。トークンが無い場合はNoneです。
+        """
+        agent_tokens = getattr(token_table[school_name], self.JSON_KEY)
+        if agent_tokens == TokenOptionsEnum.USE_SHARED:
+            agent_tokens = getattr(token_table[self.SHARED_NAME], self.JSON_KEY)
 
-        assert not isinstance(api_tokens, TokenOptionsEnum)
-        return api_tokens
+        assert not isinstance(agent_tokens, TokenOptionsEnum)
+        return agent_tokens
 
     @abstractmethod
     def broadcast_prod(self, news: News, school_name: str) -> None:
@@ -44,12 +63,12 @@ class APIBase(metaclass=ABCMeta):
 def get_all_api_classes() -> List[Type[APIBase]]:
     logger = getLogger(__name__)
     ret: List[Type[APIBase]] = []
-    for e in glob.glob(os.path.join(service.__path__[0], "*.py")):
+    for e in glob.glob(os.path.join(agents.__path__[0], "*.py")):
         if "__init__" in e:
             continue
         e = e.replace("\\", "/")
         module_name: str = e[e.rfind("/") + 1: -3]
-        crawler_module = importlib.import_module(f"API.service.{module_name}")
+        crawler_module = importlib.import_module(f"API.agents.{module_name}")
 
         clazz: type
         for clazz in map(lambda x: x[1], inspect.getmembers(crawler_module, inspect.isclass)):

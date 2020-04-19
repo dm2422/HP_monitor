@@ -1,11 +1,10 @@
 import json
-from typing import Dict
 
-from API.structs import tokens_from_dict, TokensSet
+from API.structs import tokens_from_dict, Tokens
 from const_settings import TOKENS_JSON_PATH
 
 
-def load_tokens(tokens_json_path=TOKENS_JSON_PATH) -> Dict[str, TokensSet]:
+def load_tokens(tokens_json_path=TOKENS_JSON_PATH) -> Tokens:
     """
     Load tokens from TOKENS_JSON_PATH.
     :param tokens_json_path: The path to the JSON thad the tokens are written.
