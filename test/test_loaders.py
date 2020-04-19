@@ -5,9 +5,9 @@ import unittest
 
 from faker import Faker
 
-from API.line_api import get_line_tokens
+from API.service.line import get_line_tokens
+from API.service.twitter import get_twitter_tokens
 from API.structs import TokenOptionsEnum
-from API.twitter_api import get_twitter_tokens
 from const_settings import HISTORY_JSON_PATH, TOKENS_JSON_PATH
 from loaders import load_tokens
 

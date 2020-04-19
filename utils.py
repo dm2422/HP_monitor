@@ -1,20 +1,9 @@
 import json
 from typing import List, Dict
 
-import jaconv
-
 from const_settings import HISTORY_JSON_PATH, MESSAGE_TEMPLATE
 from crawlers.common import News
 from settings import CRAWLER_CLASSES
-
-
-def initialize_logger():
-    import logging
-    logging.basicConfig(
-        level=logging.DEBUG if __debug__ else logging.INFO,
-        format="%(asctime)s | %(levelname)s:%(name)s:%(message)s"
-    )
-    logging.debug("The logger has been initialized.")
 
 
 def check_update() -> Dict[str, List[News]]:
