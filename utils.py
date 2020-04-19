@@ -36,5 +36,9 @@ def check_update() -> Dict[str, List[News]]:
 def broadcast_all(news: News, school_name: str) -> None:
     logger.info(f"Start broadcast - {school_name}:{news}")
     for clazz in get_all_api_classes():
-        clazz().broadcast(news, school_name)
+        try:
+            clazz().broadcast(news, school_name)
+        except Exception as e:
+            logger.exception(e)
+
     logger.info(f"Finish broadcast - {school_name}:{news}")
