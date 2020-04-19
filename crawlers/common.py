@@ -1,6 +1,8 @@
 from abc import ABCMeta, abstractmethod
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from typing import List
+
+import jaconv
 
 
 @dataclass
@@ -35,5 +37,12 @@ class CrawlerBase(metaclass=ABCMeta):
         """
         ret: List[News] = []
         for header in filter(lambda x: not x.hash in cached_hashes, self.fetch_recent_news_headers()):
-            ret.append(News(**asdict(header), content=self.fetch_specific_news_content(header)))
+            raw_content = self.fetch_specific_news_content(header)
+            news = News(
+                title=jaconv.zen2han(header.title, digit=True, ascii=True, kana=False),
+                content=jaconv.zen2han(raw_content, digit=True, ascii=True, kana=False),
+                origin_url=header.origin_url,
+                hash=header.hash
+            )
+            ret.append(news)
         return ret

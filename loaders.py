@@ -3,12 +3,15 @@ import importlib
 import inspect
 import json
 import os
+from logging import getLogger
 from typing import List, Type, Dict
 
 from API.structs import tokens_from_dict, TokensSet
 from const_settings import TOKENS_JSON_PATH
 from crawlers import schools
 from crawlers.common import CrawlerBase
+
+logger = getLogger(__name__)
 
 
 def get_all_crawler_classes() -> List[Type[CrawlerBase]]:
@@ -25,6 +28,7 @@ def get_all_crawler_classes() -> List[Type[CrawlerBase]]:
             if CrawlerBase in clazz.__bases__:
                 clazz: Type[CrawlerBase]
                 ret.append(clazz)
+                logger.debug(f"A crawler has installed! - {clazz}")
     return ret
 
 
