@@ -6,7 +6,7 @@ import tweepy
 from API.common import APIBase
 from API.structs import Twitter
 from crawlers.common import News
-from utils import render_twitter_text
+from renderers import render_twitter_text
 
 
 class TwitterAPI(APIBase):

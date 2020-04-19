@@ -8,8 +8,8 @@ from typing import Callable, List, Type
 
 from API import service
 from API.structs import TokenOptionsEnum
-from crawlers.common import News, CrawlerBase
-from settings import TOKENS
+from API.tokens import TOKENS
+from crawlers.common import News
 
 
 class APIBase(metaclass=ABCMeta):
@@ -41,7 +41,7 @@ class APIBase(metaclass=ABCMeta):
         self.get_broadcast_func()(news, school_name)
 
 
-def get_all_API_classes() -> List[Type[APIBase]]:
+def get_all_api_classes() -> List[Type[APIBase]]:
     logger = getLogger(__name__)
     ret: List[Type[APIBase]] = []
     for e in glob.glob(os.path.join(service.__path__[0], "*.py")):
@@ -53,7 +53,7 @@ def get_all_API_classes() -> List[Type[APIBase]]:
 
         clazz: type
         for clazz in map(lambda x: x[1], inspect.getmembers(crawler_module, inspect.isclass)):
-            if CrawlerBase in clazz.__bases__:
+            if APIBase in clazz.__bases__:
                 clazz: Type[APIBase]
                 ret.append(clazz)
                 logger.debug(f"An API agent has installed! - {clazz}")

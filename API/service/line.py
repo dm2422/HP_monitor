@@ -5,7 +5,7 @@ import requests
 from API.common import APIBase
 from API.structs import Line
 from crawlers.common import News
-from utils import render_text_default
+from renderers import render_text_default
 
 
 class LineAPI(APIBase):
