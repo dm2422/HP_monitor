@@ -3,6 +3,7 @@ import importlib
 import inspect
 import os
 from abc import ABCMeta, abstractmethod
+from functools import lru_cache
 from logging import getLogger
 from typing import Callable, List, Type
 
@@ -60,6 +61,7 @@ class APIBase(metaclass=ABCMeta):
         self.get_broadcast_func()(news, school_name)
 
 
+@lru_cache
 def get_all_api_classes() -> List[Type[APIBase]]:
     logger = getLogger(__name__)
     ret: List[Type[APIBase]] = []

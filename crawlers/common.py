@@ -4,6 +4,7 @@ import inspect
 import os
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
+from functools import lru_cache
 from logging import getLogger
 from typing import List, Type
 
@@ -55,6 +56,7 @@ class CrawlerBase(metaclass=ABCMeta):
         return ret
 
 
+@lru_cache
 def get_all_crawler_classes() -> List[Type[CrawlerBase]]:
     logger = getLogger(__name__)
     ret: List[Type[CrawlerBase]] = []

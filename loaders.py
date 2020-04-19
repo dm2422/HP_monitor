@@ -1,9 +1,11 @@
 import json
+from functools import lru_cache
 
 from API.structs import tokens_from_dict, Tokens
 from const_settings import TOKENS_JSON_PATH
 
 
+@lru_cache
 def load_tokens(tokens_json_path=TOKENS_JSON_PATH) -> Tokens:
     """
     Load tokens from TOKENS_JSON_PATH.
