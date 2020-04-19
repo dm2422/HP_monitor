@@ -1,5 +1,3 @@
-from typing import Callable
-
 import requests
 
 from API.common import APIBase
@@ -33,6 +31,3 @@ class LineAPI(APIBase):
         }
 
         requests.post(api_url, headers=headers, json=payload)
-
-
-broadcast: Callable[[News, str], None] = LineAPI().get_broadcast_func()

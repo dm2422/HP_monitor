@@ -1,5 +1,4 @@
 import copy
-from typing import Callable
 
 import tweepy
 
@@ -28,6 +27,3 @@ class TwitterAPI(APIBase):
         twitter_api = tweepy.API(auth)
         rendered_text = render_twitter_text(copy.copy(news), school_name)
         twitter_api.update_status(rendered_text)
-
-
-broadcast: Callable[[News, str], None] = TwitterAPI().get_broadcast_func()
