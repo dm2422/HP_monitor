@@ -1,3 +1,5 @@
+from copy import copy
+
 from const_settings import MESSAGE_TEMPLATE
 from crawlers.common import News
 
@@ -12,6 +14,7 @@ def render_text_default(news: News, school_name: str) -> str:
 
 
 def render_twitter_text(news: News, school_name: str) -> str:
+    news = copy(news)
     no_content_len = len(MESSAGE_TEMPLATE.format(
         name=school_name,
         title=news.title,
