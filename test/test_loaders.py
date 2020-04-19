@@ -5,11 +5,10 @@ import unittest
 
 from faker import Faker
 
-from API.service.line import LineAPI
-from API.service.twitter import TwitterAPI
 from API.structs import TokenOptionsEnum
 from const_settings import HISTORY_JSON_PATH, TOKENS_JSON_PATH
 from loaders import load_tokens
+from settings import API_AGENT_CLASSES
 
 fake = Faker("ja-JP")
 
@@ -69,14 +68,12 @@ class FileLoader(unittest.TestCase):
 
     def test_tokens_loader(self):
         test_tokens = load_tokens(self.TEST_TOKENS_JSON_PATH)
+        shared_tokens = test_tokens["shared"]
 
-        for school_name, tokens_set in test_tokens.items():
-            if tokens_set.twitter == TokenOptionsEnum.USE_SHARED:
-                self.assertEqual(TwitterAPI().get_tokens(school_name, test_tokens), test_tokens["shared"].twitter)
-            elif tokens_set.twitter is None:
-                self.assertIsNone(TwitterAPI().get_tokens(school_name, test_tokens))
-
-            if tokens_set.line == TokenOptionsEnum.USE_SHARED:
-                self.assertEqual(LineAPI().get_tokens(school_name, test_tokens), test_tokens["shared"].line)
-            elif tokens_set.line is None:
-                self.assertIsNone(LineAPI().get_tokens(school_name, test_tokens))
+        for clazz in API_AGENT_CLASSES:
+            for school_name, tokens_set in test_tokens.items():
+                if getattr(tokens_set, clazz.KEY_NAME) == TokenOptionsEnum.USE_SHARED:
+                    self.assertEqual(clazz().get_tokens(school_name, test_tokens),
+                                     getattr(shared_tokens, clazz.KEY_NAME))
+                elif getattr(tokens_set, clazz.KEY_NAME) is None:
+                    self.assertIsNone(clazz().get_tokens(school_name, test_tokens))
