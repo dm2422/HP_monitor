@@ -5,8 +5,8 @@ import unittest
 
 from faker import Faker
 
-from API.service.line import get_line_tokens
-from API.service.twitter import get_twitter_tokens
+from API.service.line import LineAPI
+from API.service.twitter import TwitterAPI
 from API.structs import TokenOptionsEnum
 from const_settings import HISTORY_JSON_PATH, TOKENS_JSON_PATH
 from loaders import load_tokens
@@ -72,11 +72,11 @@ class FileLoader(unittest.TestCase):
 
         for school_name, tokens_set in test_tokens.items():
             if tokens_set.twitter == TokenOptionsEnum.USE_SHARED:
-                self.assertEqual(get_twitter_tokens(school_name, test_tokens), test_tokens["shared"].twitter)
+                self.assertEqual(TwitterAPI().get_tokens(school_name, test_tokens), test_tokens["shared"].twitter)
             elif tokens_set.twitter is None:
-                self.assertIsNone(get_twitter_tokens(school_name, test_tokens))
+                self.assertIsNone(TwitterAPI().get_tokens(school_name, test_tokens))
 
             if tokens_set.line == TokenOptionsEnum.USE_SHARED:
-                self.assertEqual(get_line_tokens(school_name, test_tokens), test_tokens["shared"].line)
+                self.assertEqual(LineAPI().get_tokens(school_name, test_tokens), test_tokens["shared"].line)
             elif tokens_set.line is None:
-                self.assertIsNone(get_line_tokens(school_name, test_tokens))
+                self.assertIsNone(LineAPI().get_tokens(school_name, test_tokens))
