@@ -60,7 +60,9 @@ class APIBase(metaclass=ABCMeta):
         return self.broadcast_debug if __debug__ else self.broadcast_prod
 
     def broadcast(self, news: News, school_name: str):
+        self.logger.info("Start broadcast...")
         self.get_broadcast_func()(news, school_name)
+        self.logger.info("Finish broadcast.")
 
     @classmethod
     def generate_fake_tokens(cls, fake: Faker) -> Dict[str, str]:
