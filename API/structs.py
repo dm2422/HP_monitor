@@ -93,7 +93,7 @@ class Twitter:
 
 
 @dataclass
-class Shared:
+class TokensSet:
     """共有用のトークンです。設定されている場合、こちらのトークンを使用します。
 
     それぞれのトークンです。学校名はクラスで設定した名前と一致させる必要があります。
@@ -102,11 +102,11 @@ class Shared:
     twitter: Union[Twitter, TokenOptionsEnum, None]
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Shared':
+    def from_dict(obj: Any) -> 'TokensSet':
         assert isinstance(obj, dict)
         line = from_union([Line.from_dict, from_none, TokenOptionsEnum], obj.get("line"))
         twitter = from_union([Twitter.from_dict, from_none, TokenOptionsEnum], obj.get("twitter"))
-        return Shared(line, twitter)
+        return TokensSet(line, twitter)
 
     def to_dict(self) -> dict:
         result: dict = {
@@ -117,9 +117,9 @@ class Shared:
         return result
 
 
-def tokens_from_dict(s: Any) -> Dict[str, Shared]:
-    return from_dict(Shared.from_dict, s)
+def tokens_from_dict(s: Any) -> Dict[str, TokensSet]:
+    return from_dict(TokensSet.from_dict, s)
 
 
-def tokens_to_dict(x: Dict[str, Shared]) -> Any:
-    return from_dict(lambda x: to_class(Shared, x), x)
+def tokens_to_dict(x: Dict[str, TokensSet]) -> Any:
+    return from_dict(lambda x: to_class(TokensSet, x), x)
