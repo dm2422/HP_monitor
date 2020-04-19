@@ -45,15 +45,10 @@
     },
     "token_options": {
       "enum": [
-        "use_shared",
-        null
+        "use_shared"
       ]
     },
-    "tokens_set": {
-      "required": [
-        "twitter",
-        "line"
-      ],
+    "token_set": {
       "properties": {
         "twitter": {
           "oneOf": [
@@ -84,12 +79,12 @@
     "shared": {
       "type": "object",
       "description": "共有用のトークンです。設定されている場合、こちらのトークンを使用します。",
-      "$ref": "#/definitions/tokens_set"
+      "$ref": "#/definitions/token_set"
     }
   },
   "additionalProperties": {
     "type": "object",
     "description": "それぞれのトークンです。学校名はクラスで設定した名前と一致させる必要があります。",
-    "$ref": "#/definitions/tokens_set"
+    "$ref": "#/definitions/token_set"
   }
 }

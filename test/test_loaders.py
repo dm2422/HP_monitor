@@ -5,9 +5,8 @@ import unittest
 
 from faker import Faker
 
-from API.line_api import get_line_tokens
+from API.common import get_all_api_classes
 from API.structs import TokenOptionsEnum
-from API.twitter_api import get_twitter_tokens
 from const_settings import HISTORY_JSON_PATH, TOKENS_JSON_PATH
 from loaders import load_tokens
 
@@ -69,14 +68,12 @@ class FileLoader(unittest.TestCase):
 
     def test_tokens_loader(self):
         test_tokens = load_tokens(self.TEST_TOKENS_JSON_PATH)
+        shared_tokens = test_tokens["shared"]
 
-        for school_name, tokens_set in test_tokens.items():
-            if tokens_set.twitter == TokenOptionsEnum.USE_SHARED:
-                self.assertEqual(get_twitter_tokens(school_name, test_tokens), test_tokens["shared"].twitter)
-            elif tokens_set.twitter is None:
-                self.assertIsNone(get_twitter_tokens(school_name, test_tokens))
-
-            if tokens_set.line == TokenOptionsEnum.USE_SHARED:
-                self.assertEqual(get_line_tokens(school_name, test_tokens), test_tokens["shared"].line)
-            elif tokens_set.line is None:
-                self.assertIsNone(get_line_tokens(school_name, test_tokens))
+        for clazz in get_all_api_classes():
+            for school_name, tokens_set in test_tokens.items():
+                if getattr(tokens_set, clazz.JSON_KEY) == TokenOptionsEnum.USE_SHARED:
+                    self.assertEqual(clazz().get_agent_tokens(school_name, test_tokens),
+                                     getattr(shared_tokens, clazz.JSON_KEY))
+                elif getattr(tokens_set, clazz.JSON_KEY) is None:
+                    self.assertIsNone(clazz().get_agent_tokens(school_name, test_tokens))

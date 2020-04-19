@@ -1,20 +1,9 @@
 import json
 from typing import List, Dict
 
-import jaconv
-
-from const_settings import HISTORY_JSON_PATH, MESSAGE_TEMPLATE
-from crawlers.common import News
-from settings import CRAWLER_CLASSES
-
-
-def initialize_logger():
-    import logging
-    logging.basicConfig(
-        level=logging.DEBUG if __debug__ else logging.INFO,
-        format="%(asctime)s | %(levelname)s:%(name)s:%(message)s"
-    )
-    logging.debug("The logger has been initialized.")
+from API.common import get_all_api_classes
+from const_settings import HISTORY_JSON_PATH
+from crawlers.common import News, get_all_crawler_classes
 
 
 def check_update() -> Dict[str, List[News]]:
@@ -23,7 +12,7 @@ def check_update() -> Dict[str, List[News]]:
     with open(HISTORY_JSON_PATH, "r", encoding="utf-8") as rf:
         history: Dict = json.load(rf)
 
-    for crawler_class in CRAWLER_CLASSES:
+    for crawler_class in get_all_crawler_classes():
         hashes: List[str] = history.get(crawler_class.SCHOOL_NAME, [])
         crawler = crawler_class()
         latest_news = crawler.get_latest_news(hashes)
@@ -36,23 +25,6 @@ def check_update() -> Dict[str, List[News]]:
     return crawled_news
 
 
-def render_text_default(news: News, school_name: str) -> str:
-    return MESSAGE_TEMPLATE.format(
-        name=school_name,
-        title=news.title,
-        content=news.content,
-        url=news.origin_url
-    )
-
-
-def render_twitter_text(news: News, school_name: str) -> str:
-    no_content_len = len(MESSAGE_TEMPLATE.format(
-        name=school_name,
-        title=news.title,
-        content="",
-        url=""
-    )) + 24  # URL is always counted as 22~24 characters.
-    content_max_len = 140 - no_content_len
-    if content_max_len < len(news.content):
-        news.content = news.content[:content_max_len - 3] + "..."
-    return render_text_default(news, school_name)
+def broadcast_all(news: News, school_name: str) -> None:
+    for clazz in get_all_api_classes():
+        clazz().broadcast(news, school_name)
