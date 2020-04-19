@@ -9,13 +9,13 @@ from settings import TOKENS
 from utils import render_twitter_text
 
 
-def get_twitter_tokens(school_name: str) -> Optional[Twitter]:
-    tokens = TOKENS[school_name].twitter
-    if tokens == TokenOptionsEnum.USE_SHARED:
-        tokens = TOKENS["shared"].twitter
+def get_twitter_tokens(school_name: str, tokens=TOKENS) -> Optional[Twitter]:
+    twitter_tokens = tokens[school_name].twitter
+    if twitter_tokens == TokenOptionsEnum.USE_SHARED:
+        twitter_tokens = tokens["shared"].twitter
 
-    assert not isinstance(tokens, TokenOptionsEnum)
-    return tokens
+    assert not isinstance(twitter_tokens, TokenOptionsEnum)
+    return twitter_tokens
 
 
 def broadcast(news: News, school_name: str) -> None:

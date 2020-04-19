@@ -8,13 +8,13 @@ from settings import TOKENS
 from utils import render_text_default
 
 
-def get_line_tokens(school_name: str) -> Optional[Line]:
-    tokens = TOKENS[school_name].line
-    if tokens == TokenOptionsEnum.USE_SHARED:
-        tokens = TOKENS["shared"].line
+def get_line_tokens(school_name: str, tokens=TOKENS) -> Optional[Line]:
+    line_tokens = tokens[school_name].line
+    if line_tokens == TokenOptionsEnum.USE_SHARED:
+        line_tokens = tokens["shared"].line
 
-    assert not isinstance(tokens, TokenOptionsEnum)
-    return tokens
+    assert not isinstance(line_tokens, TokenOptionsEnum)
+    return line_tokens
 
 
 def broadcast(news: News, school_name: str) -> None:
