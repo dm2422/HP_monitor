@@ -40,7 +40,7 @@ def render_text_default(news: News, school_name: str) -> str:
     return MESSAGE_TEMPLATE.format(
         name=school_name,
         title=news.title,
-        content=jaconv.zen2han(news.content, digit=True, ascii=True, kana=False),
+        content=news.content,
         url=news.origin_url
     )
 
