@@ -1,3 +1,4 @@
+from logging import getLogger
 from typing import Callable
 
 import requests
@@ -5,6 +6,8 @@ import requests
 from crawlers.common import News
 from settings import TOKENS
 from utils import render_text_default
+
+logger = getLogger(__name__)
 
 
 def broadcast_prod(news: News, school_name: str) -> None:
@@ -29,7 +32,7 @@ def broadcast_prod(news: News, school_name: str) -> None:
 
 
 def broadcast_debug(news: News, school_name: str) -> None:
-    print(f"[LINE BC]: {school_name=}, {news=}")
+    logger.debug(f"A broadcast has occurred. {school_name=}, {news=}")
 
 
 broadcast: Callable[[News, str], None] = broadcast_debug if __debug__ else broadcast_prod

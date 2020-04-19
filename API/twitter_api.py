@@ -1,4 +1,5 @@
 import copy
+from logging import getLogger
 from typing import Callable
 
 import tweepy
@@ -6,6 +7,8 @@ import tweepy
 from crawlers.common import News
 from settings import TOKENS
 from utils import render_twitter_text
+
+logger = getLogger(__name__)
 
 
 def broadcast_prod(news: News, school_name: str) -> None:
@@ -25,7 +28,7 @@ def broadcast_prod(news: News, school_name: str) -> None:
 
 
 def broadcast_debug(news: News, school_name: str) -> None:
-    print(f"[Twitter BC]: {school_name=}, {news=}")
+    logger.debug(f"A broadcast has occurred. {school_name=}, {news=}")
 
 
 broadcast: Callable[[News, str], None] = broadcast_debug if __debug__ else broadcast_prod
