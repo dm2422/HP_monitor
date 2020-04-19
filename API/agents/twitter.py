@@ -1,4 +1,7 @@
+from typing import Dict
+
 import tweepy
+from faker import Faker
 
 from API.common import APIBase
 from crawlers.common import News
@@ -25,3 +28,12 @@ class TwitterAPI(APIBase):
         twitter_api = tweepy.API(auth)
         rendered_text = render_twitter_text(news, school_name)
         twitter_api.update_status(rendered_text)
+
+    @classmethod
+    def generate_fake_tokens(cls, fake: Faker) -> Dict[str, str]:
+        return {
+            "consumer_key": fake.password(25),
+            "consumer_secret": fake.password(50),
+            "access_token": fake.password(50),
+            "access_token_secret": fake.password(45)
+        }

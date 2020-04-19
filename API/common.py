@@ -7,6 +7,8 @@ from functools import lru_cache
 from logging import getLogger
 from typing import Callable, List, Type, Dict, Optional
 
+from faker import Faker
+
 from API import agents
 from crawlers.common import News
 from settings import TOKEN_TABLE
@@ -59,6 +61,12 @@ class APIBase(metaclass=ABCMeta):
 
     def broadcast(self, news: News, school_name: str):
         self.get_broadcast_func()(news, school_name)
+
+    @classmethod
+    def generate_fake_tokens(cls, fake: Faker) -> Dict[str, str]:
+        return {
+            "bot_token": fake.password(8)
+        }
 
 
 @lru_cache
