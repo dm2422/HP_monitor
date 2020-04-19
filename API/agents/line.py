@@ -1,7 +1,6 @@
 import requests
 
 from API.common import APIBase
-from API.structs import Line
 from crawlers.common import News
 from renderers import render_text_default
 
@@ -11,7 +10,7 @@ class LineAPI(APIBase):
     JSON_KEY = "line"
 
     def broadcast_prod(self, news: News, school_name: str) -> None:
-        line_tokens: Line = self.get_agent_tokens(school_name)
+        line_tokens = self.get_agent_tokens(school_name)
         if not line_tokens:
             return
         rendered_text = render_text_default(news, school_name)
@@ -27,7 +26,7 @@ class LineAPI(APIBase):
         }
 
         headers = {
-            "Authorization": "Bearer " + line_tokens.channel_token,
+            "Authorization": "Bearer " + line_tokens["channel_token"],
             "Content-Type": "application/json"
         }
 
