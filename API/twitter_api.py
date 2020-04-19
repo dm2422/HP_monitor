@@ -1,9 +1,11 @@
 import copy
+from typing import Optional
 from logging import getLogger
 from typing import Callable
 
 import tweepy
 
+from API.structs import Twitter, TokenOptionsEnum
 from crawlers.common import News
 from settings import TOKENS
 from utils import render_twitter_text
@@ -11,8 +13,19 @@ from utils import render_twitter_text
 logger = getLogger(__name__)
 
 
+def get_twitter_tokens(school_name: str, tokens=TOKENS) -> Optional[Twitter]:
+    twitter_tokens = tokens[school_name].twitter
+    if twitter_tokens == TokenOptionsEnum.USE_SHARED:
+        twitter_tokens = tokens["shared"].twitter
+
+    assert not isinstance(twitter_tokens, TokenOptionsEnum)
+    return twitter_tokens
+
+
 def broadcast_prod(news: News, school_name: str) -> None:
-    twitter_tokens = TOKENS[school_name].twitter
+    twitter_tokens = get_twitter_tokens(school_name)
+    if not twitter_tokens:
+        return
     auth = tweepy.OAuthHandler(
         twitter_tokens.consumer_key,
         twitter_tokens.consumer_secret
