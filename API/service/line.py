@@ -3,14 +3,13 @@ from typing import Callable
 import requests
 
 from API.common import APIBase
-from API.structs import Line
 from crawlers.common import News
 from renderers import render_text_default
 
 
 class LineAPI(APIBase):
-    API_NAME = __name__
-    TOKEN_CLASS = Line
+    DEBUG_NAME = __name__
+    KEY_NAME = "line"
 
     def broadcast_prod(self, news: News, school_name: str) -> None:
         line_tokens = self.get_tokens(school_name)

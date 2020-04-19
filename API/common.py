@@ -13,16 +13,16 @@ from crawlers.common import News
 
 
 class APIBase(metaclass=ABCMeta):
-    API_NAME: str
-    TOKEN_CLASS: type
+    DEBUG_NAME: str
+    KEY_NAME: str
 
     def __init__(self):
-        self.logger = getLogger(self.API_NAME)
+        self.logger = getLogger(self.DEBUG_NAME)
 
-    def get_tokens(self, tokens=TOKENS):
-        api_tokens = getattr(tokens[self.API_NAME], self.API_NAME)
+    def get_tokens(self, school_name: str, tokens=TOKENS):
+        api_tokens = getattr(tokens[school_name], self.KEY_NAME)
         if api_tokens == TokenOptionsEnum.USE_SHARED:
-            api_tokens = getattr(tokens["shared"], self.API_NAME)
+            api_tokens = getattr(tokens["shared"], self.KEY_NAME)
 
         assert not isinstance(api_tokens, TokenOptionsEnum)
         return api_tokens

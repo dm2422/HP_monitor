@@ -4,14 +4,13 @@ from typing import Callable
 import tweepy
 
 from API.common import APIBase
-from API.structs import Twitter
 from crawlers.common import News
 from renderers import render_twitter_text
 
 
 class TwitterAPI(APIBase):
-    API_NAME = __name__
-    TOKEN_CLASS = Twitter
+    DEBUG_NAME = __name__
+    KEY_NAME = "twitter"
 
     def broadcast_prod(self, news: News, school_name: str) -> None:
         twitter_tokens = self.get_tokens(school_name)
