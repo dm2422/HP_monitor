@@ -52,7 +52,7 @@ class APIBase(metaclass=ABCMeta):
         pass
 
     def broadcast_debug(self, news: News, school_name: str) -> None:
-        self.logger.debug(f"A broadcast has occurred. {school_name=}, {news=}")
+        self.logger.debug(f"A broadcast has occurred. {self.get_agent_tokens(school_name)=}, {school_name=}, {news=}")
 
     def get_broadcast_func(self) -> Callable[[News, str], None]:
         return self.broadcast_debug if __debug__ else self.broadcast_prod
