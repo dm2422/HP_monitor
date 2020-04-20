@@ -12,11 +12,11 @@ class DiscordAPI(APIBase):
     LOGGING_NAME = __name__
     JSON_KEY = "discord"
 
-    def broadcast_prod(self, news: News, school_name: str) -> None:
-        discord_tokens = self.get_agent_tokens(school_name)
+    def broadcast_prod(self, news: News, site_name: str) -> None:
+        discord_tokens = self.get_agent_tokens(site_name)
         if not discord_tokens:
             return
-        rendered_text = render_text_default(news, school_name)
+        rendered_text = render_text_default(news, site_name)
         api_base_url = "https://discordapp.com/api/webhooks/"
 
         payload = {

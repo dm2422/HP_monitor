@@ -108,7 +108,7 @@
   },
   "additionalProperties": {
     "type": "object",
-    "description": "それぞれのトークンです。学校名はクラスで設定した名前と一致させる必要があります。",
+    "description": "それぞれのトークンです。サイト名はクラスで設定した名前と一致させる必要があります。",
     "$ref": "#/definitions/token_set"
   }
 }

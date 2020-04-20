@@ -10,7 +10,7 @@ from typing import List, Type
 
 import jaconv
 
-from crawlers import schools
+from crawlers import sites
 
 
 @dataclass
@@ -27,7 +27,7 @@ class News(NewsHeader):
 
 class CrawlerBase(metaclass=ABCMeta):
     HP_URL: str
-    SCHOOL_NAME: str
+    SITE_NAME: str
 
     @abstractmethod
     def fetch_recent_news_headers(self) -> List[NewsHeader]:
@@ -60,12 +60,12 @@ class CrawlerBase(metaclass=ABCMeta):
 def get_all_crawler_classes() -> List[Type[CrawlerBase]]:
     logger = getLogger(__name__)
     ret: List[Type[CrawlerBase]] = []
-    for e in glob.glob(os.path.join(schools.__path__[0], "*.py")):
+    for e in glob.glob(os.path.join(sites.__path__[0], "*.py")):
         if "__init__" in e:
             continue
         e = e.replace("\\", "/")
         module_name: str = e[e.rfind("/") + 1: -3]
-        crawler_module = importlib.import_module(f"crawlers.schools.{module_name}")
+        crawler_module = importlib.import_module(f"crawlers.sites.{module_name}")
 
         clazz: type
         for clazz in map(lambda x: x[1], inspect.getmembers(crawler_module, inspect.isclass)):

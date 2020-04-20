@@ -7,7 +7,7 @@ import requests
 
 class Utsunomiya(CrawlerBase):
     HP_URL = "http://www.tochigi-edu.ed.jp/utsunomiya/nc2/"
-    SCHOOL_NAME = "宇都宮高校"
+    SITE_NAME = "宇都宮高校"
 
     def fetch_recent_news_headers(self) -> List[NewsHeader]:
         fetched_news_header: List[NewsHeader] = []

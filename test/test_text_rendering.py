@@ -19,7 +19,7 @@ class TwitterRenderingTest(unittest.TestCase):
         )
         rendered_text = render_twitter_text(
             news=news,
-            school_name=fake.company()
+            site_name=fake.company()
         )
         self.assertLessEqual(len(rendered_text), 140)
 
@@ -33,6 +33,6 @@ class TwitterRenderingTest(unittest.TestCase):
         )
         rendered_text = render_twitter_text(
             news=news,
-            school_name=fake.company()
+            site_name=fake.company()
         )
         self.assertLessEqual(len(rendered_text) - (len(fake_uri) - 24), 140)
