@@ -43,6 +43,19 @@
         }
       }
     },
+    "discord":{
+      "type":"object",
+      "description": "Discordのアクセストークンです。指定しなかった場合配信は行われません。",
+      "additionalProperties": false,
+      "required": [
+        "webhook_token"
+      ],
+      "properties": {
+        "webhook_token": {
+          "type": "string"
+        }
+      }
+    },
     "token_options": {
       "enum": [
         "use_shared"
@@ -65,6 +78,17 @@
           "oneOf": [
             {
               "$ref": "#/definitions/line"
+            },
+            {
+              "$ref": "#/definitions/token_options"
+            }
+          ],
+          "default": null
+        },
+        "discord": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/discord"
             },
             {
               "$ref": "#/definitions/token_options"
