@@ -1,11 +1,13 @@
+from copy import copy
 from typing import Dict
 
 import tweepy
 from faker import Faker
 
 from API.common import APIBase
+from const_settings import MESSAGE_TEMPLATE
 from crawlers.common import News
-from renderers import render_twitter_text
+from utils import render_text_default
 
 
 class TwitterAPI(APIBase):
@@ -37,3 +39,17 @@ class TwitterAPI(APIBase):
             "access_token": fake.password(50),
             "access_token_secret": fake.password(45)
         }
+
+
+def render_twitter_text(news: News, school_name: str) -> str:
+    news = copy(news)
+    no_content_len = len(MESSAGE_TEMPLATE.format(
+        name=school_name,
+        title=news.title,
+        content="",
+        url=""
+    )) + 24  # URL is always counted as 22~24 characters.
+    content_max_len = 140 - no_content_len
+    if content_max_len < len(news.content):
+        news.content = news.content[:content_max_len - 3] + "..."
+    return render_text_default(news, school_name)

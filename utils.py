@@ -3,7 +3,7 @@ from logging import getLogger
 from typing import List, Dict
 
 from API.common import get_all_api_classes
-from const_settings import HISTORY_JSON_PATH
+from const_settings import HISTORY_JSON_PATH, MESSAGE_TEMPLATE
 from crawlers.common import News, get_all_crawler_classes
 
 logger = getLogger(__name__)
@@ -42,3 +42,12 @@ def broadcast_all(news: News, school_name: str) -> None:
             logger.exception(e)
 
     logger.info(f"Finish broadcast - {school_name}:{news}")
+
+
+def render_text_default(news: News, school_name: str) -> str:
+    return MESSAGE_TEMPLATE.format(
+        name=school_name,
+        title=news.title,
+        content=news.content,
+        url=news.origin_url
+    )
