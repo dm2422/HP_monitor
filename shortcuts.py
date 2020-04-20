@@ -26,7 +26,7 @@ def check_update() -> Dict[str, List[News]]:
         logger.debug(f"Finished crawling '{crawler_class.SITE_NAME}' HP.")
 
     with open(HISTORY_JSON_PATH, "w", encoding="utf-8") as wf:
-        json.dump(history, wf, indent=4, ensure_ascii=False)
+        json.dump(history, wf, indent=2, ensure_ascii=False)
     logger.debug(f"'{HISTORY_JSON_PATH}' has saved successfully!")
 
     return crawled_news

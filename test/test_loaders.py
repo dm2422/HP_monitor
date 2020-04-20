@@ -33,7 +33,7 @@ class FileLoader(unittest.TestCase):
                 test_tokens["shared"][clazz.JSON_KEY] = \
                     random.choice([None, "use_shared", clazz().generate_fake_tokens(fake)])
         with open(self.TEST_TOKENS_JSON_PATH, "w", encoding="utf-8") as wf:
-            json.dump(test_tokens, wf, indent=4, ensure_ascii=False)
+            json.dump(test_tokens, wf, indent=2, ensure_ascii=False)
 
     def tearDown(self) -> None:
         os.remove(self.TEST_TOKENS_JSON_PATH)
