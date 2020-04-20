@@ -3,7 +3,7 @@ import unittest
 from faker import Faker
 
 from crawlers.common import News
-from utils import render_twitter_text
+from API.agents.twitter import render_twitter_text
 
 fake = Faker("ja-JP")
 
