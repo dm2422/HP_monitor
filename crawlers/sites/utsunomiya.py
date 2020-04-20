@@ -24,7 +24,7 @@ class Utsunomiya(CrawlerBase):
         return fetched_news_header
 
     def fetch_specific_news_content(self, news_header: NewsHeader) -> str:
-        res = requests.get(news_header.origin_url)
+        res = requests.get(news_header.content_url)
         soup = bs4.BeautifulSoup(res.text, features="html.parser")
         detail_raw = soup.select_one(".journal_content")
         detail_raw.br.replace_with("\n")

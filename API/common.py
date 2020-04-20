@@ -1,19 +1,13 @@
-import glob
-import importlib
-import inspect
-import os
 from abc import ABCMeta, abstractmethod
 from functools import lru_cache
 from logging import getLogger
-from typing import Callable, List, Type, Dict, Optional
+from typing import Callable, List, Type, Dict, Optional, cast
 
 from faker import Faker
 
-from API import agents
+from utils import get_all_classes_from_package
 from crawlers.common import News
 from settings import TOKEN_TABLE
-
-AgentTokens = Dict[str, str]
 
 
 class APIBase(metaclass=ABCMeta):
@@ -24,7 +18,7 @@ class APIBase(metaclass=ABCMeta):
     def __init__(self):
         self.logger = getLogger(self.LOGGING_NAME)
 
-    def get_agent_tokens(self, site_name: str, token_table=TOKEN_TABLE) -> Optional[AgentTokens]:
+    def get_agent_tokens(self, site_name: str, token_table=TOKEN_TABLE) -> Optional[Dict[str, str]]:
         """
         指定したサイト名のトークンを取得します。取得するトークンはこのクラスのエージェントのトークンのみです。
         戻り値は辞書型としてアクセスすることができます。
@@ -78,19 +72,9 @@ class APIBase(metaclass=ABCMeta):
 
 @lru_cache
 def get_all_api_classes() -> List[Type[APIBase]]:
-    logger = getLogger(__name__)
-    ret: List[Type[APIBase]] = []
-    for e in glob.glob(os.path.join(agents.__path__[0], "*.py")):
-        if "__init__" in e:
-            continue
-        e = e.replace("\\", "/")
-        module_name: str = e[e.rfind("/") + 1: -3]
-        crawler_module = importlib.import_module(f"API.agents.{module_name}")
-
-        clazz: type
-        for clazz in map(lambda x: x[1], inspect.getmembers(crawler_module, inspect.isclass)):
-            if APIBase in clazz.__bases__:
-                clazz: Type[APIBase]
-                ret.append(clazz)
-                logger.debug(f"An API agent has installed! - {clazz}")
-    return ret
+    import API
+    import API.agents
+    return cast(List[Type[APIBase]], get_all_classes_from_package(
+        API.agents.__name__,
+        lambda c: API.common.APIBase in c.__bases__
+    ))

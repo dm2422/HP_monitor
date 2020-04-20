@@ -11,7 +11,7 @@ def init_json_file(path: str):
 def cmd_init() -> None:
     init_json_file(HISTORY_JSON_PATH)
     init_json_file(TOKENS_JSON_PATH)
-    from utils import check_update
+    from shortcuts import check_update
     check_update()
 
 

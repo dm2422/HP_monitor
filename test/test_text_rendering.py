@@ -13,7 +13,7 @@ class TwitterRenderingTest(unittest.TestCase):
     def test_not_round_max_len(self):
         news = News(
             title=fake.company(),
-            origin_url=fake.uri(),
+            content_url=fake.uri(),
             hash=fake.sha1(),
             content=fake.text(10)
         )
@@ -27,7 +27,7 @@ class TwitterRenderingTest(unittest.TestCase):
         fake_uri = fake.uri() + fake.uri_path(20)
         news = News(
             title=fake.company(),
-            origin_url=fake_uri,
+            content_url=fake_uri,
             hash=fake.sha1(),
             content=fake.text(200)
         )

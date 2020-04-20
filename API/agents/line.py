@@ -5,7 +5,7 @@ from faker import Faker
 
 from API.common import APIBase
 from crawlers.common import News
-from utils import render_text_default
+from shortcuts import render_text_default
 
 
 class LineAPI(APIBase):
