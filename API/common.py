@@ -1,32 +1,26 @@
-import glob
-import importlib
-import inspect
-import os
 from abc import ABCMeta, abstractmethod
 from functools import lru_cache
 from logging import getLogger
-from typing import Callable, List, Type, Dict, Optional
+from typing import Callable, List, Type, Dict, cast
 
 from faker import Faker
 
-from API import agents
-from crawlers.common import News
+import custom_types
+from custom_types import News
 from settings import TOKEN_TABLE
+from utils import get_all_classes_from_package
 
-AgentTokens = Dict[str, str]
 
-
-class APIBase(metaclass=ABCMeta):
+class APIBase(custom_types.Singleton, metaclass=ABCMeta):
     LOGGING_NAME: str
     JSON_KEY: str
-    SHARED_NAME = "shared"
 
     def __init__(self):
         self.logger = getLogger(self.LOGGING_NAME)
 
-    def get_agent_tokens(self, school_name: str, token_table=TOKEN_TABLE) -> Optional[AgentTokens]:
+    def get_api_tokens(self, site_name: str, token_table=TOKEN_TABLE) -> custom_types.ApiTokens:
         """
-        指定した学校名のトークンを取得します。取得するトークンはこのクラスのエージェントのトークンのみです。
+        指定したサイト名のトークンを取得します。取得するトークンはこのクラスのエージェントのトークンのみです。
         戻り値は辞書型としてアクセスすることができます。
         (例)
         [json]
@@ -39,33 +33,46 @@ class APIBase(metaclass=ABCMeta):
         >> "abc"
         self.get_agent_tokens()["bot_token_secret"]
         >> "123"
-        :param school_name: 学校名
+        :param site_name: サイト名
         :param token_table: [デバッグ用]使用するトークンテーブルを指定します。
         :return:トークンのdataclassです。トークンが無い場合はNoneです。
         """
-        agent_tokens = token_table[school_name].get(self.JSON_KEY, None)
-        if agent_tokens == "use_shared":
-            agent_tokens = token_table[self.SHARED_NAME].get(self.JSON_KEY, None)
+        try:
+            api_tokens = token_table[site_name].get(self.JSON_KEY)
+        except KeyError:
+            raise ValueError(f"'{site_name}' does not exist.")
+        except RecursionError:
+            raise ValueError(f"It seems that there is a circular reference at '{site_name}'.")
+        if isinstance(api_tokens, str):
+            if api_tokens[:3] == "use_" or len(api_tokens) < 5:
+                raise ValueError(f"'{api_tokens}' is invalid for token.")
+            using_site_name = api_tokens[4:]
+            api_tokens = self.get_api_tokens(using_site_name, token_table)
 
-        return agent_tokens
+        return api_tokens
 
     @abstractmethod
-    def broadcast_prod(self, news: News, school_name: str) -> None:
+    def broadcast_prod(self, news: News, site_name: str) -> None:
         pass
 
-    def broadcast_debug(self, news: News, school_name: str) -> None:
-        self.logger.debug(f"A broadcast has occurred. {self.get_agent_tokens(school_name)=}, {school_name=}, {news=}")
+    def broadcast_debug(self, news: News, site_name: str) -> None:
+        self.logger.debug(f"A broadcast has occurred. {self.get_api_tokens(site_name)=}, {site_name=}, {news=}")
 
     def get_broadcast_func(self) -> Callable[[News, str], None]:
         return self.broadcast_debug if __debug__ else self.broadcast_prod
 
-    def broadcast(self, news: News, school_name: str):
+    def broadcast(self, news: News, site_name: str):
         self.logger.info("Start broadcast...")
-        self.get_broadcast_func()(news, school_name)
+        self.get_broadcast_func()(news, site_name)
         self.logger.info("Finish broadcast.")
 
     @classmethod
-    def generate_fake_tokens(cls, fake: Faker) -> Dict[str, str]:
+    def generate_fake_api_tokens(cls, fake: Faker) -> Dict[str, str]:
+        """
+        このメソッドは単体テストのために使用されます。
+        :param fake:テスト用のトークンを生成するための、Fakerインスタンスです。
+        :return:生成したテスト用トークンです。JSONと構造を一致させる必要があります。
+        """
         return {
             "bot_token": fake.password(8)
         }
@@ -73,19 +80,9 @@ class APIBase(metaclass=ABCMeta):
 
 @lru_cache
 def get_all_api_classes() -> List[Type[APIBase]]:
-    logger = getLogger(__name__)
-    ret: List[Type[APIBase]] = []
-    for e in glob.glob(os.path.join(agents.__path__[0], "*.py")):
-        if "__init__" in e:
-            continue
-        e = e.replace("\\", "/")
-        module_name: str = e[e.rfind("/") + 1: -3]
-        crawler_module = importlib.import_module(f"API.agents.{module_name}")
-
-        clazz: type
-        for clazz in map(lambda x: x[1], inspect.getmembers(crawler_module, inspect.isclass)):
-            if APIBase in clazz.__bases__:
-                clazz: Type[APIBase]
-                ret.append(clazz)
-                logger.debug(f"An API agent has installed! - {clazz}")
-    return ret
+    import API
+    import API.agents
+    return cast(List[Type[APIBase]], get_all_classes_from_package(
+        API.agents.__name__,
+        lambda c: API.common.APIBase in c.__bases__
+    ))

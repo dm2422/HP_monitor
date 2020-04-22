@@ -1,53 +1,26 @@
-import json
-from logging import getLogger
-from typing import List, Dict
+"""
+This module should not depend on anything other than standard modules.
+このモジュールは、標準モジュール以外に依存してはいけません。
+"""
 
-from API.common import get_all_api_classes
-from const_settings import HISTORY_JSON_PATH, MESSAGE_TEMPLATE
-from crawlers.common import News, get_all_crawler_classes
-
-logger = getLogger(__name__)
-
-
-def check_update() -> Dict[str, List[News]]:
-    crawled_news: Dict[str, List[News]] = {}
-
-    with open(HISTORY_JSON_PATH, "r", encoding="utf-8") as rf:
-        history: Dict = json.load(rf)
-    logger.debug(f"'{HISTORY_JSON_PATH}' has loaded successfully!")
-
-    for crawler_class in get_all_crawler_classes():
-        logger.debug(f"Start crawling '{crawler_class.SCHOOL_NAME}' HP.")
-        hashes: List[str] = history.get(crawler_class.SCHOOL_NAME, [])
-        crawler = crawler_class()
-        latest_news = crawler.get_latest_news(hashes)
-        logger.info(f"'{crawler_class.SCHOOL_NAME}' has {len(latest_news)} latest news.")
-        history[crawler_class.SCHOOL_NAME] = hashes + list(map(lambda x: x.hash, latest_news))
-        crawled_news[crawler_class.SCHOOL_NAME] = latest_news
-        logger.debug(f"Finished crawling '{crawler_class.SCHOOL_NAME}' HP.")
-
-    with open(HISTORY_JSON_PATH, "w", encoding="utf-8") as wf:
-        json.dump(history, wf, indent=4, ensure_ascii=False)
-    logger.debug(f"'{HISTORY_JSON_PATH}' has saved successfully!")
-
-    return crawled_news
+import importlib
+import inspect
+import pkgutil
+from collections import deque
+from typing import List, Type, Optional, Callable
 
 
-def broadcast_all(news: News, school_name: str) -> None:
-    logger.info(f"Start broadcast - {school_name}:{news}")
-    for clazz in get_all_api_classes():
-        try:
-            clazz().broadcast(news, school_name)
-        except Exception as e:
-            logger.exception(e)
+def get_all_classes_from_package(pkg_path: str, filter_func: Optional[Callable[[Type], bool]] = None) -> List[Type]:
+    ret = deque()
+    module = importlib.import_module(pkg_path)
+    for info in pkgutil.iter_modules(module.__path__, f"{module.__name__}."):
+        if info.ispkg:
+            ret += get_all_classes_from_package(info.name, filter_func)
+            continue
 
-    logger.info(f"Finish broadcast - {school_name}:{news}")
-
-
-def render_text_default(news: News, school_name: str) -> str:
-    return MESSAGE_TEMPLATE.format(
-        name=school_name,
-        title=news.title,
-        content=news.content,
-        url=news.origin_url
-    )
+        child_module = importlib.import_module(info.name)
+        for clazz in (x[1] for x in inspect.getmembers(child_module, inspect.isclass)):
+            if filter_func and not filter_func(clazz):
+                continue
+            ret.append(clazz)
+    return list(ret)

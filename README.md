@@ -35,7 +35,7 @@ venv\Scripts\python manage.py init
 # サイトの追加方法
 詳しいドキュメントは後日追記します。
 
-1. `crawlers.schools`に監視したいサイトのクローラを追加します。
+1. `crawlers.sites`に監視したいサイトのクローラを追加します。
 2. `tokens.json`に配信用のトークンを設定します。
 3. `python manage.py init`を実行して、現在のサイトの状態をキャッシュします。
 
