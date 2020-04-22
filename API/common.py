@@ -11,7 +11,7 @@ from settings import TOKEN_TABLE
 from utils import get_all_classes_from_package
 
 
-class APIBase(metaclass=ABCMeta):
+class APIBase(custom_types.Singleton, metaclass=ABCMeta):
     LOGGING_NAME: str
     JSON_KEY: str
 
