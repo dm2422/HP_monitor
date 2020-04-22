@@ -1,13 +1,14 @@
 from abc import ABCMeta, abstractmethod
 from functools import lru_cache
 from logging import getLogger
-from typing import Callable, List, Type, Dict, Optional, cast
+from typing import Callable, List, Type, Dict, cast
 
 from faker import Faker
 
-from utils import get_all_classes_from_package
-from crawlers.common import News
+import custom_types
+from custom_types import News
 from settings import TOKEN_TABLE
+from utils import get_all_classes_from_package
 
 
 class APIBase(metaclass=ABCMeta):
@@ -17,7 +18,7 @@ class APIBase(metaclass=ABCMeta):
     def __init__(self):
         self.logger = getLogger(self.LOGGING_NAME)
 
-    def get_agent_tokens(self, site_name: str, token_table=TOKEN_TABLE) -> Optional[Dict[str, str]]:
+    def get_api_tokens(self, site_name: str, token_table=TOKEN_TABLE) -> custom_types.ApiTokens:
         """
         指定したサイト名のトークンを取得します。取得するトークンはこのクラスのエージェントのトークンのみです。
         戻り値は辞書型としてアクセスすることができます。
@@ -37,25 +38,25 @@ class APIBase(metaclass=ABCMeta):
         :return:トークンのdataclassです。トークンが無い場合はNoneです。
         """
         try:
-            agent_tokens = token_table[site_name].get(self.JSON_KEY)
+            api_tokens = token_table[site_name].get(self.JSON_KEY)
         except KeyError:
             raise ValueError(f"'{site_name}' does not exist.")
         except RecursionError:
             raise ValueError(f"It seems that there is a circular reference at '{site_name}'.")
-        if isinstance(agent_tokens, str):
-            if agent_tokens[:3] == "use_" or len(agent_tokens) < 5:
-                raise ValueError(f"'{agent_tokens}' is invalid for token.")
-            using_site_name = agent_tokens[4:]
-            agent_tokens = self.get_agent_tokens(using_site_name, token_table)
+        if isinstance(api_tokens, str):
+            if api_tokens[:3] == "use_" or len(api_tokens) < 5:
+                raise ValueError(f"'{api_tokens}' is invalid for token.")
+            using_site_name = api_tokens[4:]
+            api_tokens = self.get_api_tokens(using_site_name, token_table)
 
-        return agent_tokens
+        return api_tokens
 
     @abstractmethod
     def broadcast_prod(self, news: News, site_name: str) -> None:
         pass
 
     def broadcast_debug(self, news: News, site_name: str) -> None:
-        self.logger.debug(f"A broadcast has occurred. {self.get_agent_tokens(site_name)=}, {site_name=}, {news=}")
+        self.logger.debug(f"A broadcast has occurred. {self.get_api_tokens(site_name)=}, {site_name=}, {news=}")
 
     def get_broadcast_func(self) -> Callable[[News, str], None]:
         return self.broadcast_debug if __debug__ else self.broadcast_prod
@@ -66,7 +67,7 @@ class APIBase(metaclass=ABCMeta):
         self.logger.info("Finish broadcast.")
 
     @classmethod
-    def generate_fake_tokens(cls, fake: Faker) -> Dict[str, str]:
+    def generate_fake_api_tokens(cls, fake: Faker) -> Dict[str, str]:
         """
         このメソッドは単体テストのために使用されます。
         :param fake:テスト用のトークンを生成するための、Fakerインスタンスです。

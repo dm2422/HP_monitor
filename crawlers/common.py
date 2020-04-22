@@ -1,23 +1,11 @@
 from abc import ABCMeta, abstractmethod
-from dataclasses import dataclass
 from functools import lru_cache
 from typing import List, Type, cast
 
 import jaconv
 
+from custom_types import NewsHeader, News
 from utils import get_all_classes_from_package
-
-
-@dataclass
-class NewsHeader:
-    content_url: str
-    title: str
-    hash: str
-
-
-@dataclass
-class News(NewsHeader):
-    content: str
 
 
 class CrawlerBase(metaclass=ABCMeta):

@@ -6,7 +6,7 @@ from faker import Faker
 
 from API.common import APIBase
 from const_settings import MESSAGE_TEMPLATE
-from crawlers.common import News
+from custom_types import News
 from shortcuts import render_text_default
 
 
@@ -15,7 +15,7 @@ class TwitterAPI(APIBase):
     JSON_KEY = "twitter"
 
     def broadcast_prod(self, news: News, site_name: str) -> None:
-        twitter_tokens = self.get_agent_tokens(site_name)
+        twitter_tokens = self.get_api_tokens(site_name)
         if not twitter_tokens:
             return
         auth = tweepy.OAuthHandler(
@@ -32,7 +32,7 @@ class TwitterAPI(APIBase):
         twitter_api.update_status(rendered_text)
 
     @classmethod
-    def generate_fake_tokens(cls, fake: Faker) -> Dict[str, str]:
+    def generate_fake_api_tokens(cls, fake: Faker) -> Dict[str, str]:
         return {
             "consumer_key": fake.password(25),
             "consumer_secret": fake.password(50),

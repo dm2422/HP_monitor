@@ -4,7 +4,8 @@ from typing import List, Dict
 
 from API.common import get_all_api_classes
 from const_settings import HISTORY_JSON_PATH, MESSAGE_TEMPLATE
-from crawlers.common import News, get_all_crawler_classes
+from crawlers.common import get_all_crawler_classes
+from custom_types import News
 
 
 def check_update() -> Dict[str, List[News]]:

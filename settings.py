@@ -1,12 +1,12 @@
 import json
 from functools import lru_cache
-from typing import Dict, Union
 
+import custom_types
 from const_settings import TOKENS_JSON_PATH
 
 
 @lru_cache
-def load_tokens(tokens_json_path=TOKENS_JSON_PATH) -> Dict[str, Dict[str, Union[Dict[str, str], str, None]]]:
+def load_token_table(tokens_json_path=TOKENS_JSON_PATH) -> custom_types.TokenTable:
     """
     Load tokens from TOKENS_JSON_PATH.
     :param tokens_json_path: The path to the JSON thad the tokens are written.
@@ -18,4 +18,4 @@ def load_tokens(tokens_json_path=TOKENS_JSON_PATH) -> Dict[str, Dict[str, Union[
     return tokens_
 
 
-TOKEN_TABLE = load_tokens()
+TOKEN_TABLE = load_token_table()

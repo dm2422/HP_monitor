@@ -1,6 +1,7 @@
 import hashlib
 from typing import List
-from crawlers.common import CrawlerBase, NewsHeader
+from crawlers.common import CrawlerBase
+from custom_types import NewsHeader
 import bs4
 import requests
 
