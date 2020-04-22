@@ -19,7 +19,7 @@ def get_all_classes_from_package(pkg_path: str, filter_func: Optional[Callable[[
             continue
 
         child_module = importlib.import_module(info.name)
-        for clazz in map(lambda x: x[1], inspect.getmembers(child_module, inspect.isclass)):
+        for clazz in (x[1] for x in inspect.getmembers(child_module, inspect.isclass)):
             if filter_func and not filter_func(clazz):
                 continue
             ret.append(clazz)

@@ -22,7 +22,7 @@ def check_update() -> Dict[str, List[News]]:
         crawler = crawler_class()
         latest_news = crawler.get_latest_news(hashes)
         logger.info(f"'{crawler_class.SITE_NAME}' has {len(latest_news)} latest news.")
-        history[crawler_class.SITE_NAME] = hashes + list(map(lambda x: x.hash, latest_news))
+        history[crawler_class.SITE_NAME] = hashes + [x.hash for x in latest_news]
         crawled_news[crawler_class.SITE_NAME] = latest_news
         logger.debug(f"Finished crawling '{crawler_class.SITE_NAME}' HP.")
 
