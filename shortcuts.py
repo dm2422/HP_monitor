@@ -35,14 +35,14 @@ def check_update() -> Dict[str, List[News]]:
 
 def broadcast_all(news: News, site_name: str) -> None:
     logger = getLogger(broadcast_all.__qualname__)
-    logger.info(f"Start broadcast - {site_name}:{news}")
+    logger.info(f"Start broadcast - {news.hash[:8]}:{site_name}:{news.title}")
     for clazz in get_all_api_classes():
         try:
             clazz().broadcast(news, site_name)
         except Exception as e:
             logger.exception(e)
 
-    logger.info(f"Finish broadcast - {site_name}:{news}")
+    logger.info(f"Finish broadcast - {news.hash[:8]}")
 
 
 def render_text_default(news: News, site_name: str) -> str:
