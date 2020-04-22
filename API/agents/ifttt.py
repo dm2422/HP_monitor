@@ -12,11 +12,11 @@ class IftttAPI(APIBase):
     LOGGING_NAME = __name__
     JSON_KEY = "ifttt"
 
-    def broadcast_prod(self, news: News, site_name: str) -> None:
-        ifttt_settings = self.get_api_tokens(site_name)
+    def broadcast_prod(self, news: News) -> None:
+        ifttt_settings = self.get_api_tokens(news.site_name)
         if not ifttt_settings:
             return
-        rendered_text = render_text_default(news, site_name)
+        rendered_text = render_text_default(news)
         api_url = "https://maker.ifttt.com/trigger/{event}/with/key/{key}".format(
             event=ifttt_settings["event"],
             key=ifttt_settings["key"]

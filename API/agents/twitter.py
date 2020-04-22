@@ -14,8 +14,8 @@ class TwitterAPI(APIBase):
     LOGGING_NAME = __name__
     JSON_KEY = "twitter"
 
-    def broadcast_prod(self, news: News, site_name: str) -> None:
-        twitter_tokens = self.get_api_tokens(site_name)
+    def broadcast_prod(self, news: News) -> None:
+        twitter_tokens = self.get_api_tokens(news.site_name)
         if not twitter_tokens:
             return
         auth = tweepy.OAuthHandler(
@@ -28,7 +28,7 @@ class TwitterAPI(APIBase):
         )
 
         twitter_api = tweepy.API(auth)
-        rendered_text = render_twitter_text(news, site_name)
+        rendered_text = render_twitter_text(news)
         twitter_api.update_status(rendered_text)
 
     @classmethod
@@ -41,15 +41,15 @@ class TwitterAPI(APIBase):
         }
 
 
-def render_twitter_text(news: News, site_name: str) -> str:
+def render_twitter_text(news: News) -> str:
     news = copy(news)
     no_content_len = len(MESSAGE_TEMPLATE.format(
-        name=site_name,
+        site_name=news.site_name,
         title=news.title,
         content="",
-        url=""
+        content_url=""
     )) + 24  # URL is always counted as 22~24 characters.
     content_max_len = 140 - no_content_len
     if content_max_len < len(news.content):
         news.content = news.content[:content_max_len - 3] + "..."
-    return render_text_default(news, site_name)
+    return render_text_default(news)

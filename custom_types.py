@@ -17,6 +17,7 @@ class NewsHeader:
 
 @dataclass
 class News(NewsHeader):
+    site_name: str
     content: str
 
 

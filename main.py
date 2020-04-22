@@ -14,4 +14,4 @@ if __name__ == "__main__":
 
     for site_name, news_list in check_update().items():
         for news in news_list:
-            broadcast_all(news, site_name)
+            broadcast_all(news)

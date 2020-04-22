@@ -52,18 +52,18 @@ class APIBase(custom_types.Singleton, metaclass=ABCMeta):
         return api_tokens
 
     @abstractmethod
-    def broadcast_prod(self, news: News, site_name: str) -> None:
+    def broadcast_prod(self, news: News) -> None:
         pass
 
-    def broadcast_debug(self, news: News, site_name: str) -> None:
-        self.logger.debug(f"A broadcast has occurred. {self.get_api_tokens(site_name)=}, {site_name=}, {news=}")
+    def broadcast_debug(self, news: News) -> None:
+        self.logger.debug(f"A broadcast has occurred. {self.get_api_tokens(news.site_name)=}, {news=}")
 
-    def get_broadcast_func(self) -> Callable[[News, str], None]:
+    def get_broadcast_func(self) -> Callable[[News], None]:
         return self.broadcast_debug if __debug__ else self.broadcast_prod
 
-    def broadcast(self, news: News, site_name: str):
+    def broadcast(self, news: News):
         self.logger.info("Start broadcast...")
-        self.get_broadcast_func()(news, site_name)
+        self.get_broadcast_func()(news)
         self.logger.info("Finish broadcast.")
 
     @classmethod

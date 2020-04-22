@@ -1,4 +1,5 @@
 import json
+from dataclasses import asdict
 from logging import getLogger
 from typing import List, Dict
 
@@ -33,22 +34,17 @@ def check_update() -> Dict[str, List[News]]:
     return crawled_news
 
 
-def broadcast_all(news: News, site_name: str) -> None:
+def broadcast_all(news: News) -> None:
     logger = getLogger(broadcast_all.__qualname__)
-    logger.info(f"Start broadcast - {news.hash[:8]}:{site_name}:{news.title}")
+    logger.info(f"Start broadcast - {news.hash[:8]}:{news.site_name}:{news.title}")
     for clazz in get_all_api_classes():
         try:
-            clazz().broadcast(news, site_name)
+            clazz().broadcast(news)
         except Exception as e:
             logger.exception(e)
 
     logger.info(f"Finish broadcast - {news.hash[:8]}")
 
 
-def render_text_default(news: News, site_name: str) -> str:
-    return MESSAGE_TEMPLATE.format(
-        name=site_name,
-        title=news.title,
-        content=news.content,
-        url=news.content_url
-    )
+def render_text_default(news: News) -> str:
+    return MESSAGE_TEMPLATE.format(**asdict(news))

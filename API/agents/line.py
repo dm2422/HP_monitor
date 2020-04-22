@@ -12,11 +12,11 @@ class LineAPI(APIBase):
     LOGGING_NAME = __name__
     JSON_KEY = "line"
 
-    def broadcast_prod(self, news: News, site_name: str) -> None:
-        line_tokens = self.get_api_tokens(site_name)
+    def broadcast_prod(self, news: News) -> None:
+        line_tokens = self.get_api_tokens(news.site_name)
         if not line_tokens:
             return
-        rendered_text = render_text_default(news, site_name)
+        rendered_text = render_text_default(news)
         api_url = "https://api.line.me/v2/bot/message/broadcast"
 
         payload = {
