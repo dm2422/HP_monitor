@@ -28,5 +28,6 @@ class Utsunomiya(CrawlerBase):
         res = requests.get(news_header.content_url)
         soup = bs4.BeautifulSoup(res.text, features="html.parser")
         detail_raw = soup.select_one(".journal_content")
-        detail_raw.br.replace_with("\n")
-        return detail_raw.get_text()
+        for i in detail_raw.select("br"):
+            i.replace_with("\n")
+        return detail_raw.get_text().strip()
