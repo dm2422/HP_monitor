@@ -13,7 +13,6 @@ from settings import TOKEN_TABLE
 class APIBase(metaclass=ABCMeta):
     LOGGING_NAME: str
     JSON_KEY: str
-    SHARED_NAME = "shared"
 
     def __init__(self):
         self.logger = getLogger(self.LOGGING_NAME)
@@ -37,9 +36,17 @@ class APIBase(metaclass=ABCMeta):
         :param token_table: [デバッグ用]使用するトークンテーブルを指定します。
         :return:トークンのdataclassです。トークンが無い場合はNoneです。
         """
-        agent_tokens = token_table[site_name].get(self.JSON_KEY, None)
-        if agent_tokens == "use_shared":
-            agent_tokens = token_table[self.SHARED_NAME].get(self.JSON_KEY, None)
+        try:
+            agent_tokens = token_table[site_name].get(self.JSON_KEY)
+        except KeyError:
+            raise ValueError(f"'{site_name}' does not exist.")
+        except RecursionError:
+            raise ValueError(f"It seems that there is a circular reference at '{site_name}'.")
+        if isinstance(agent_tokens, str):
+            if agent_tokens[:3] == "use_" or len(agent_tokens) < 5:
+                raise ValueError(f"'{agent_tokens}' is invalid for token.")
+            using_site_name = agent_tokens[4:]
+            agent_tokens = self.get_agent_tokens(using_site_name, token_table)
 
         return agent_tokens
 

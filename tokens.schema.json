@@ -1,9 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
   "type": "object",
-  "required": [
-    "shared"
-  ],
   "definitions": {
     "twitter": {
       "type": "object",
@@ -43,8 +40,8 @@
         }
       }
     },
-    "discord":{
-      "type":"object",
+    "discord": {
+      "type": "object",
       "description": "Discordのアクセストークンです。指定しなかった場合配信は行われません。",
       "additionalProperties": false,
       "required": [
@@ -57,9 +54,8 @@
       }
     },
     "token_options": {
-      "enum": [
-        "use_shared"
-      ]
+      "type": "string",
+      "pattern": "^(use_).+"
     },
     "token_set": {
       "properties": {
@@ -97,13 +93,6 @@
           "default": null
         }
       }
-    }
-  },
-  "properties": {
-    "shared": {
-      "type": "object",
-      "description": "共有用のトークンです。設定されている場合、こちらのトークンを使用します。",
-      "$ref": "#/definitions/token_set"
     }
   },
   "additionalProperties": {
