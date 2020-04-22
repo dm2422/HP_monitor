@@ -4,7 +4,7 @@ import requests
 from faker import Faker
 
 from API.common import APIBase
-from custom_types import News
+from custom_types import News, TokenDict
 from shortcuts import render_text_default
 
 
@@ -12,10 +12,7 @@ class LineAPI(APIBase):
     LOGGING_NAME = __name__
     JSON_KEY = "line"
 
-    def broadcast_prod(self, news: News) -> None:
-        line_tokens = self.get_api_tokens(news.site_name)
-        if not line_tokens:
-            return
+    def broadcast_prod(self, news: News, tokens: TokenDict) -> None:
         rendered_text = render_text_default(news)
         api_url = "https://api.line.me/v2/bot/message/broadcast"
 
@@ -29,7 +26,7 @@ class LineAPI(APIBase):
         }
 
         headers = {
-            "Authorization": "Bearer " + line_tokens["channel_token"],
+            "Authorization": "Bearer " + tokens["channel_token"],
             "Content-Type": "application/json"
         }
 

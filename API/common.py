@@ -1,24 +1,23 @@
 from abc import ABCMeta, abstractmethod
 from functools import lru_cache
 from logging import getLogger
-from typing import Callable, List, Type, Dict, cast
+from typing import Callable, List, Type, Dict, cast, Optional
 
 from faker import Faker
 
-import custom_types
-from custom_types import News
+from custom_types import News, Singleton, TokenDict
 from settings import TOKEN_TABLE
 from utils import get_all_classes_from_package
 
 
-class APIBase(custom_types.Singleton, metaclass=ABCMeta):
+class APIBase(Singleton, metaclass=ABCMeta):
     LOGGING_NAME: str
     JSON_KEY: str
 
     def __init__(self):
         self.logger = getLogger(self.LOGGING_NAME)
 
-    def get_api_tokens(self, site_name: str, token_table=TOKEN_TABLE) -> custom_types.ApiTokens:
+    def get_api_tokens(self, site_name: str, token_table=TOKEN_TABLE) -> Optional[TokenDict]:
         """
         指定したサイト名のトークンを取得します。取得するトークンはこのクラスのエージェントのトークンのみです。
         戻り値は辞書型としてアクセスすることができます。
@@ -52,18 +51,19 @@ class APIBase(custom_types.Singleton, metaclass=ABCMeta):
         return api_tokens
 
     @abstractmethod
-    def broadcast_prod(self, news: News) -> None:
+    def broadcast_prod(self, news: News, token: TokenDict) -> None:
         pass
 
-    def broadcast_debug(self, news: News) -> None:
-        self.logger.debug(f"A broadcast has occurred. {self.get_api_tokens(news.site_name)=}, {news=}")
+    def broadcast_debug(self, news: News, token: TokenDict) -> None:
+        self.logger.debug(f"A broadcast has occurred. {token=}, {news=}")
 
-    def get_broadcast_func(self) -> Callable[[News], None]:
+    def get_broadcast_func(self) -> Callable[[News, TokenDict], None]:
         return self.broadcast_debug if __debug__ else self.broadcast_prod
 
     def broadcast(self, news: News):
         self.logger.info("Start broadcast...")
-        self.get_broadcast_func()(news)
+        if token := self.get_api_tokens(news.site_name):
+            self.get_broadcast_func()(news, token)
         self.logger.info("Finish broadcast.")
 
     @classmethod

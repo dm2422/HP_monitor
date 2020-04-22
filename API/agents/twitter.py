@@ -6,7 +6,7 @@ from faker import Faker
 
 from API.common import APIBase
 from const_settings import MESSAGE_TEMPLATE
-from custom_types import News
+from custom_types import News, TokenDict
 from shortcuts import render_text_default
 
 
@@ -14,17 +14,14 @@ class TwitterAPI(APIBase):
     LOGGING_NAME = __name__
     JSON_KEY = "twitter"
 
-    def broadcast_prod(self, news: News) -> None:
-        twitter_tokens = self.get_api_tokens(news.site_name)
-        if not twitter_tokens:
-            return
+    def broadcast_prod(self, news: News, tokens: TokenDict) -> None:
         auth = tweepy.OAuthHandler(
-            twitter_tokens["consumer_key"],
-            twitter_tokens["consumer_secret"]
+            tokens["consumer_key"],
+            tokens["consumer_secret"]
         )
         auth.set_access_token(
-            twitter_tokens["access_token"],
-            twitter_tokens["access_token_secret"]
+            tokens["access_token"],
+            tokens["access_token_secret"]
         )
 
         twitter_api = tweepy.API(auth)

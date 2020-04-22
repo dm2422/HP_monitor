@@ -4,7 +4,7 @@ import requests
 from faker import Faker
 
 from API.common import APIBase
-from custom_types import News
+from custom_types import News, TokenDict
 from shortcuts import render_text_default
 
 
@@ -12,10 +12,7 @@ class DiscordAPI(APIBase):
     LOGGING_NAME = __name__
     JSON_KEY = "discord"
 
-    def broadcast_prod(self, news: News) -> None:
-        discord_tokens = self.get_api_tokens(news.site_name)
-        if not discord_tokens:
-            return
+    def broadcast_prod(self, news: News, tokens: TokenDict) -> None:
         rendered_text = render_text_default(news)
         api_base_url = "https://discordapp.com/api/webhooks/"
 
@@ -23,7 +20,7 @@ class DiscordAPI(APIBase):
             "content": rendered_text
         }
 
-        api_uri = api_base_url + discord_tokens["webhook_token"]
+        api_uri = api_base_url + tokens["webhook_token"]
 
         requests.post(api_uri, json=payload)
 

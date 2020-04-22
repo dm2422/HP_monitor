@@ -4,7 +4,7 @@ import requests
 from faker import Faker
 
 from API.common import APIBase
-from custom_types import News
+from custom_types import News, TokenDict
 from shortcuts import render_text_default
 
 
@@ -12,14 +12,11 @@ class IftttAPI(APIBase):
     LOGGING_NAME = __name__
     JSON_KEY = "ifttt"
 
-    def broadcast_prod(self, news: News) -> None:
-        ifttt_settings = self.get_api_tokens(news.site_name)
-        if not ifttt_settings:
-            return
+    def broadcast_prod(self, news: News, tokens: TokenDict) -> None:
         rendered_text = render_text_default(news)
         api_url = "https://maker.ifttt.com/trigger/{event}/with/key/{key}".format(
-            event=ifttt_settings["event"],
-            key=ifttt_settings["key"]
+            event=tokens["event"],
+            key=tokens["key"]
         )
 
         payload = {
