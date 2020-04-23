@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 from typing import Dict, Union, Optional
 
-ApiTokens = Optional[Union[Dict[str, str], str]]
+TokenDict = Dict[str, str]
+
+ApiTokens = Optional[Union[TokenDict, str]]
 
 TokenSet = Dict[str, ApiTokens]
 
@@ -17,6 +19,7 @@ class NewsHeader:
 
 @dataclass
 class News(NewsHeader):
+    site_name: str
     content: str
 
 

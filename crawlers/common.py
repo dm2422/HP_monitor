@@ -30,6 +30,7 @@ class CrawlerBase(metaclass=ABCMeta):
         for header in filter(lambda x: x.hash not in cached_hashes, self.fetch_recent_news_headers()):
             raw_content = self.fetch_specific_news_content(header)
             news = News(
+                site_name=self.SITE_NAME,
                 title=jaconv.zen2han(header.title, digit=True, ascii=True, kana=False),
                 content=jaconv.zen2han(raw_content, digit=True, ascii=True, kana=False),
                 content_url=header.content_url,

@@ -2,11 +2,11 @@ HISTORY_JSON_PATH = "history.json"
 
 TOKENS_JSON_PATH = "tokens.json"
 
-MESSAGE_TEMPLATE = '''{name}のホームページが更新されました。
+MESSAGE_TEMPLATE = '''{site_name}のホームページが更新されました。
 
 {title}
 
 {content}
 
 記事のURLはこちらです。
-{url}'''
+{content_url}'''

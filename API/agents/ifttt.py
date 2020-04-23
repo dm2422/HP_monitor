@@ -8,24 +8,26 @@ from custom_types import News, TokenDict
 from shortcuts import render_text_default
 
 
-class DiscordAPI(APIBase):
+class IftttAPI(APIBase):
     LOGGING_NAME = __name__
-    JSON_KEY = "discord"
+    JSON_KEY = "ifttt"
 
     def broadcast_prod(self, news: News, tokens: TokenDict) -> None:
         rendered_text = render_text_default(news)
-        api_base_url = "https://discordapp.com/api/webhooks/"
+        api_url = "https://maker.ifttt.com/trigger/{event}/with/key/{key}".format(
+            event=tokens["event"],
+            key=tokens["key"]
+        )
 
         payload = {
-            "content": rendered_text
+            "value1": rendered_text
         }
 
-        api_uri = api_base_url + tokens["webhook_token"]
-
-        requests.post(api_uri, json=payload)
+        requests.post(api_url, json=payload)
 
     @classmethod
     def generate_fake_api_tokens(cls, fake: Faker) -> Dict[str, str]:
         return {
-            "webhook_token": fake.password(18) + "/" + fake.password(68)
+            "event": fake.user_name(),
+            "key": fake.password(22)
         }

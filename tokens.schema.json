@@ -53,6 +53,23 @@
         }
       }
     },
+    "ifttt": {
+      "type": "object",
+      "description": "IFTTTのアクセストークンです。指定しなかった場合配信は行われません。",
+      "additionalProperties": false,
+      "required": [
+        "event",
+        "key"
+      ],
+      "properties": {
+        "event": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        }
+      }
+    },
     "token_options": {
       "type": "string",
       "pattern": "^(use_).+"
@@ -85,6 +102,17 @@
           "oneOf": [
             {
               "$ref": "#/definitions/discord"
+            },
+            {
+              "$ref": "#/definitions/token_options"
+            }
+          ],
+          "default": null
+        },
+        "ifttt": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/ifttt"
             },
             {
               "$ref": "#/definitions/token_options"
