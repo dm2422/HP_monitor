@@ -2,10 +2,8 @@ from abc import ABCMeta, abstractmethod
 from functools import lru_cache
 from typing import List, Type, cast
 
-import jaconv
-
 from custom_types import NewsHeader, News
-from utils import get_all_classes_from_package
+from utils import get_all_classes_from_package, pretty_text
 
 
 class CrawlerBase(metaclass=ABCMeta):
@@ -31,8 +29,8 @@ class CrawlerBase(metaclass=ABCMeta):
             raw_content = self.fetch_specific_news_content(header)
             news = News(
                 site_name=self.SITE_NAME,
-                title=jaconv.zen2han(header.title, digit=True, ascii=True, kana=False),
-                content=jaconv.zen2han(raw_content, digit=True, ascii=True, kana=False),
+                title=pretty_text(header.title),
+                content=pretty_text(raw_content),
                 content_url=header.content_url,
                 hash=header.hash
             )
