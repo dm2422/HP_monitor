@@ -2,12 +2,14 @@
 This module should not depend on anything other than standard modules.
 このモジュールは、標準モジュール以外に依存してはいけません。
 """
-
+import functools
 import importlib
 import inspect
 import pkgutil
 from collections import deque
-from typing import List, Type, Optional, Callable
+from typing import List, Type, Optional, Callable, cast
+
+import jaconv
 
 
 def get_all_classes_from_package(pkg_path: str, filter_func: Optional[Callable[[Type], bool]] = None) -> List[Type]:
@@ -24,3 +26,9 @@ def get_all_classes_from_package(pkg_path: str, filter_func: Optional[Callable[[
                 continue
             ret.append(clazz)
     return list(ret)
+
+
+pretty_text = cast(
+    Callable[[str], str],
+    functools.partial(jaconv.zen2han, digit=True, ascii=True, kana=False)
+)

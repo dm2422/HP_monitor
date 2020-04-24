@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from functools import lru_cache
 from logging import getLogger
-from typing import Callable, List, Type, Dict, cast, Optional
+from typing import Callable, List, Type, cast, Optional
 
 from faker import Faker
 
@@ -52,12 +52,28 @@ class APIBase(Singleton, metaclass=ABCMeta):
 
     @abstractmethod
     def broadcast_prod(self, news: News, token: TokenDict) -> None:
+        """
+        本番用の配信関数です。本番環境では、こちらの関数が呼ばれます。
+        :param news: 配信するべきニュースです。
+        :param token: 配信に使うべきトークンです。
+        :return:
+        """
         pass
 
     def broadcast_debug(self, news: News, token: TokenDict) -> None:
+        """
+        テスト用の配信関数です。テスト環境では、こちらの関数が呼ばれます。
+        :param news: 配信するべきニュースです。
+        :param token: 配信に使うべきトークンです。
+        :return:
+        """
         self.logger.debug(f"A broadcast has occurred. {token=}, {news=}")
 
     def get_broadcast_func(self) -> Callable[[News, TokenDict], None]:
+        """
+        本番用とテスト用の関数を、グローバル変数`__debug__によって返します。`
+        :return: 関数
+        """
         return self.broadcast_debug if __debug__ else self.broadcast_prod
 
     def broadcast(self, news: News):
@@ -67,7 +83,7 @@ class APIBase(Singleton, metaclass=ABCMeta):
         self.logger.info("Finish broadcast.")
 
     @classmethod
-    def generate_fake_api_tokens(cls, fake: Faker) -> Dict[str, str]:
+    def generate_fake_api_tokens(cls, fake: Faker) -> TokenDict:
         """
         このメソッドは単体テストのために使用されます。
         :param fake:テスト用のトークンを生成するための、Fakerインスタンスです。

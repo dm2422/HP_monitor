@@ -1,5 +1,3 @@
-from typing import Dict
-
 import requests
 from faker import Faker
 
@@ -26,7 +24,7 @@ class IftttAPI(APIBase):
         requests.post(api_url, json=payload)
 
     @classmethod
-    def generate_fake_api_tokens(cls, fake: Faker) -> Dict[str, str]:
+    def generate_fake_api_tokens(cls, fake: Faker) -> TokenDict:
         return {
             "event": fake.user_name(),
             "key": fake.password(22)

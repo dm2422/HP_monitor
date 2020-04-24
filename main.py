@@ -12,6 +12,5 @@ if __name__ == "__main__":
 
     from shortcuts import check_update, broadcast_all
 
-    for site_name, news_list in check_update().items():
-        for news in news_list:
-            broadcast_all(news)
+    for news in check_update():
+        broadcast_all(news)

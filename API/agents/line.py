@@ -1,5 +1,3 @@
-from typing import Dict
-
 import requests
 from faker import Faker
 
@@ -33,7 +31,7 @@ class LineAPI(APIBase):
         requests.post(api_url, headers=headers, json=payload)
 
     @classmethod
-    def generate_fake_api_tokens(cls, fake: Faker) -> Dict[str, str]:
+    def generate_fake_api_tokens(cls, fake: Faker) -> TokenDict:
         return {
             "channel_token": fake.password(172)
         }
