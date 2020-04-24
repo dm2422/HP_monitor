@@ -8,6 +8,7 @@ from API.common import get_all_api_classes
 from const_settings import HISTORY_JSON_PATH, MESSAGE_TEMPLATE
 from crawlers.common import get_all_crawler_classes
 from custom_types import News
+from settings import TOKEN_TABLE
 
 
 def check_update() -> Deque[News]:
@@ -18,7 +19,8 @@ def check_update() -> Deque[News]:
         history: Dict = json.load(rf)
     logger.debug(f"'{HISTORY_JSON_PATH}' has loaded successfully!")
 
-    for crawler_class in get_all_crawler_classes():
+    using_crawlers = filter(lambda c: c.SITE_NAME in TOKEN_TABLE.keys(), get_all_crawler_classes())
+    for crawler_class in using_crawlers:
         logger.debug(f"Start crawling '{crawler_class.SITE_NAME}' HP.")
         hashes: List[str] = history.get(crawler_class.SITE_NAME, [])
         crawler = crawler_class()
