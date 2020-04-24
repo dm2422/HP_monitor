@@ -1,5 +1,3 @@
-from typing import Dict
-
 import requests
 from faker import Faker
 
@@ -25,7 +23,7 @@ class DiscordAPI(APIBase):
         requests.post(api_uri, json=payload)
 
     @classmethod
-    def generate_fake_api_tokens(cls, fake: Faker) -> Dict[str, str]:
+    def generate_fake_api_tokens(cls, fake: Faker) -> TokenDict:
         return {
             "webhook_token": fake.password(18) + "/" + fake.password(68)
         }

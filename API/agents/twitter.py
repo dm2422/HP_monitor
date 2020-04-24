@@ -1,5 +1,4 @@
 from copy import copy
-from typing import Dict
 
 import tweepy
 from faker import Faker
@@ -29,7 +28,7 @@ class TwitterAPI(APIBase):
         twitter_api.update_status(rendered_text)
 
     @classmethod
-    def generate_fake_api_tokens(cls, fake: Faker) -> Dict[str, str]:
+    def generate_fake_api_tokens(cls, fake: Faker) -> TokenDict:
         return {
             "consumer_key": fake.password(25),
             "consumer_secret": fake.password(50),
