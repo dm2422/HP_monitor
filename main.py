@@ -1,8 +1,7 @@
-from utils import initialize_logger, validate_history
+from utils import initialize_logger
 
 if __name__ == "__main__":
     initialize_logger()
-    validate_history()
 
     from shortcuts import check_update, broadcast_all
 

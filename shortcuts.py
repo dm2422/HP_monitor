@@ -1,23 +1,21 @@
-import json
 from collections import deque
 from dataclasses import asdict
 from logging import getLogger
-from typing import List, Dict, Deque
+from typing import List, Deque
 
 from API.common import get_all_api_classes
-from const_settings import HISTORY_JSON_PATH, MESSAGE_TEMPLATE
+from const_settings import MESSAGE_TEMPLATE
 from crawlers.common import get_all_crawler_classes
 from custom_types import News
 from settings import TOKEN_TABLE
+from utils import load_history, save_history
 
 
 def check_update() -> Deque[News]:
     logger = getLogger(check_update.__qualname__)
     crawled_news: Deque[News] = deque()
 
-    with open(HISTORY_JSON_PATH, "r", encoding="utf-8") as rf:
-        history: Dict = json.load(rf)
-    logger.debug(f"'{HISTORY_JSON_PATH}' has loaded successfully!")
+    history = load_history()
 
     using_crawlers = filter(lambda c: c.SITE_NAME in TOKEN_TABLE.keys(), get_all_crawler_classes())
     for crawler_class in using_crawlers:
@@ -30,9 +28,7 @@ def check_update() -> Deque[News]:
         crawled_news += latest_news
         logger.debug(f"Finished crawling '{crawler_class.SITE_NAME}' HP.")
 
-    with open(HISTORY_JSON_PATH, "w", encoding="utf-8") as wf:
-        json.dump(history, wf, indent=2, ensure_ascii=False)
-    logger.debug(f"'{HISTORY_JSON_PATH}' has saved successfully!")
+    save_history(history)
 
     return crawled_news
 

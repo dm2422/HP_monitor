@@ -1,21 +1,7 @@
-import json
-from functools import lru_cache
+from typing import cast
 
-import custom_types
 from const_settings import TOKENS_JSON_PATH
+from custom_types import TokenTable
+from utils import load_json_default
 
-
-@lru_cache
-def load_token_table(tokens_json_path=TOKENS_JSON_PATH) -> custom_types.TokenTable:
-    """
-    Load tokens from TOKENS_JSON_PATH.
-    :param tokens_json_path: The path to the JSON thad the tokens are written.
-    :return: Dict[site_name: str, tokens_set: TokensSet]
-    """
-    with open(tokens_json_path, "r", encoding="utf-8") as rf:
-        tokens_ = json.load(rf)
-
-    return tokens_
-
-
-TOKEN_TABLE = load_token_table()
+TOKEN_TABLE = cast(TokenTable, load_json_default(TOKENS_JSON_PATH))
