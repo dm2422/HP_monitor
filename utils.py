@@ -60,7 +60,6 @@ def initialize_logger() -> None:
         level=logging.DEBUG if __debug__ else logging.INFO,
         format="%(asctime)s | %(levelname)s:%(name)s:%(message)s"
     )
-    logging.debug("The logger has been initialized.")
 
 
 def load_history(path=HISTORY_JSON_PATH) -> History:
@@ -77,3 +76,10 @@ def save_history(obj: History, path=HISTORY_JSON_PATH) -> None:
     logger = getLogger(save_history.__qualname__)
     save_json_default(obj, path)
     logger.debug(f"'{HISTORY_JSON_PATH}' has saved successfully!")
+
+
+def wrap_one_arg(func: Callable) -> Callable:
+    def inner(p):
+        return func(*p)
+
+    return inner
