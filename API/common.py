@@ -77,10 +77,9 @@ class APIBase(Singleton, metaclass=ABCMeta):
         return self.broadcast_debug if __debug__ else self.broadcast_prod
 
     def broadcast(self, news: News):
-        self.logger.info("Start broadcast...")
         if token := self.get_api_tokens(news.site_name):
+            self.logger.info(f"Start broadcast with token: {token}")
             self.get_broadcast_func()(news, token)
-        self.logger.info("Finish broadcast.")
 
     @classmethod
     def generate_fake_api_tokens(cls, fake: Faker) -> TokenDict:

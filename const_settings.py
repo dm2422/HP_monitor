@@ -10,3 +10,5 @@ MESSAGE_TEMPLATE = '''{site_name}のホームページが更新されました�
 
 記事のURLはこちらです。
 {content_url}'''
+
+MAX_WORKERS = 4

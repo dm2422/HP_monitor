@@ -8,7 +8,8 @@ import inspect
 import json
 import pkgutil
 from collections import deque
-from typing import List, Type, Optional, Callable, cast
+from logging import getLogger
+from typing import List, Type, Optional, Callable, cast, TextIO
 
 import jaconv
 
@@ -37,6 +38,21 @@ pretty_text = cast(
     functools.partial(jaconv.zen2han, digit=True, ascii=True, kana=False)
 )
 
+open_utf_8 = functools.partial(open, encoding="utf-8")
+r_open_utf_8 = cast(Callable[[str], TextIO], functools.partial(open_utf_8, mode="r"))
+w_open_utf_8 = cast(Callable[[str], TextIO], functools.partial(open_utf_8, mode="w"))
+
+
+def load_json_default(path: str) -> object:
+    with r_open_utf_8(path) as rf:
+        loaded = json.load(rf)
+    return loaded
+
+
+def save_json_default(obj: object, path: str) -> None:
+    with w_open_utf_8(path) as wf:
+        json.dump(obj, wf, ensure_ascii=False, indent=2)
+
 
 def initialize_logger() -> None:
     import logging
@@ -44,18 +60,26 @@ def initialize_logger() -> None:
         level=logging.DEBUG if __debug__ else logging.INFO,
         format="%(asctime)s | %(levelname)s:%(name)s:%(message)s"
     )
-    logging.debug("The logger has been initialized.")
 
 
-def validate_history(path=HISTORY_JSON_PATH) -> None:
-    """
-    Validate history.json. Raise ValueError if there is no caches.
-    :param path: Path to history.json
-    :return: None
-    :raises ValueError
-    """
-    with open(path, "r", encoding="utf-8") as rf:
-        history: History = json.load(rf)
+def load_history(path=HISTORY_JSON_PATH) -> History:
+    logger = getLogger(load_history.__qualname__)
+    history = cast(History, load_json_default(path))
     for caches in history.values():
         if len(caches) == 0:
             raise ValueError("A suspicious history has been detected.")
+    logger.debug(f"'{HISTORY_JSON_PATH}' has loaded successfully!")
+    return history
+
+
+def save_history(obj: History, path=HISTORY_JSON_PATH) -> None:
+    logger = getLogger(save_history.__qualname__)
+    save_json_default(obj, path)
+    logger.debug(f"'{HISTORY_JSON_PATH}' has saved successfully!")
+
+
+def wrap_one_arg(func: Callable) -> Callable:
+    def inner(p):
+        return func(*p)
+
+    return inner

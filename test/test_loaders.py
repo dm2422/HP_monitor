@@ -1,9 +1,9 @@
-import json
 import unittest
 
 from faker import Faker
 
 from const_settings import HISTORY_JSON_PATH, TOKENS_JSON_PATH
+from utils import load_json_default
 
 fake = Faker("ja-JP")
 
@@ -16,13 +16,11 @@ class FileLoader(unittest.TestCase):
     """
 
     def test_can_load_history(self):
-        with open(HISTORY_JSON_PATH, "r", encoding="utf-8") as rf:
-            history = json.load(rf)
+        history = load_json_default(HISTORY_JSON_PATH)
         self.assertIsNotNone(history)
         self.assertIsInstance(history, dict)
 
     def test_can_load_tokens(self):
-        with open(TOKENS_JSON_PATH, "r", encoding="utf-8") as rf:
-            tokens = json.load(rf)
+        tokens = load_json_default(TOKENS_JSON_PATH)
         self.assertIsNotNone(tokens)
         self.assertIsInstance(tokens, dict)
