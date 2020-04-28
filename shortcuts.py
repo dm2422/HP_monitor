@@ -20,7 +20,11 @@ def crawl_news_with_class(clazz: Type[CrawlerBase], history: Dict[str, List[str]
 
     logger.debug(f"Start crawling news at {clazz.SITE_NAME}.")
     start_time = time.time()
-    latest_news = clazz().get_latest_news(hashes)
+    try:
+        latest_news = clazz().get_latest_news(hashes)
+    except Exception as e:
+        logger.exception(e)
+        latest_news = []
     elapsed = time.time() - start_time
     logger.info(f"Crawled {len(latest_news)} news in {round(elapsed, 2)} seconds.")
 
