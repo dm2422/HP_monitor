@@ -8,6 +8,7 @@ import inspect
 import json
 import pkgutil
 from collections import deque
+from itertools import accumulate
 from logging import getLogger
 from typing import List, Type, Optional, Callable, cast, TextIO
 
@@ -83,3 +84,16 @@ def wrap_one_arg(func: Callable) -> Callable:
         return func(*p)
 
     return inner
+
+
+def str_clamp(value: str, max_length: int) -> str:
+    return value if len(value) <= max_length else value[:max_length - 3] + "..."
+
+
+def str_clamp_bytes(value: str, max_bytes: int) -> str:
+    byte_count = list(map(lambda s: len(s.encode('utf-8')), value))
+    try:
+        end_slice = next(i for i, v in enumerate(accumulate(byte_count)) if v > max_bytes)
+    except StopIteration:
+        return value
+    return value[:end_slice - 3] + "..."
