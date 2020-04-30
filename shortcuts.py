@@ -9,12 +9,11 @@ from const_settings import MESSAGE_TEMPLATE, MAX_WORKERS
 from crawlers.common import get_all_crawler_classes, CrawlerBase
 from custom_types import News
 from settings import TOKEN_TABLE
-from utils import load_history, save_history, initialize_logger, wrap_one_arg
+from utils import load_history, save_history, wrap_one_arg
 
 
 @wrap_one_arg
 def crawl_news_with_class(clazz: Type[CrawlerBase], history: Dict[str, List[str]]) -> List[News]:
-    initialize_logger()
     logger = getLogger(clazz.__qualname__)
     hashes = history.get(clazz.SITE_NAME, [])
 

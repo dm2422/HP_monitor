@@ -57,20 +57,16 @@ def history():
 
 @command_action("run-once")
 def run_once():
-    from utils import initialize_logger
     from shortcuts import check_update, broadcast_all
 
-    initialize_logger()
     for news in check_update():
         broadcast_all(news)
 
 
 @command_action("monitor", "interval")
 def monitor(interval: int):
-    from utils import initialize_logger
     from shortcuts import check_update, broadcast_all
 
-    initialize_logger()
     while True:
         for news in check_update():
             broadcast_all(news)
@@ -88,7 +84,10 @@ def execute_command(args: argparse.Namespace) -> int:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s | %(levelname)s:%(name)s:%(message)s"
+    )
 
     parser = argparse.ArgumentParser(description="Manage this monitor.")
     parser.add_argument("action", choices=ACTION_TO_FUNC.keys())
