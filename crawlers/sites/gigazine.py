@@ -25,7 +25,7 @@ class Gigazine(CrawlerBase):
         return fetched_news_header
 
     def fetch_specific_news_content(self, news_header: NewsHeader) -> str:
-        res = requests.get("https://gigazine.net/news/20200430-go-survey-2019/")
+        res = requests.get(news_header.content_url)
         soup = bs4.BeautifulSoup(res.text, "html.parser")
         content = soup.select_one("#article .cntimage")
         for br in content.select("br"):
