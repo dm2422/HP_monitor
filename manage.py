@@ -1,4 +1,6 @@
 import argparse
+import logging
+import sys
 import time
 from typing import Callable, Dict, Tuple
 
@@ -86,8 +88,6 @@ def execute_command(args: argparse.Namespace) -> int:
 
 
 if __name__ == "__main__":
-    import logging
-
     logging.basicConfig(level=logging.INFO)
 
     parser = argparse.ArgumentParser(description="Manage this monitor.")
@@ -101,7 +101,10 @@ if __name__ == "__main__":
         logging.debug("Debug mode is enabled!")
 
     start_time = time.time()
-    exit_code = execute_command(commandline_args)
+    try:
+        exit_code = execute_command(commandline_args)
+    except KeyboardInterrupt:
+        sys.exit("Interrupted by user")
     elapsed = time.time() - start_time
 
     print(f"The command: {repr(commandline_args.action)} has finished "
