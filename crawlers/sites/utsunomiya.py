@@ -1,13 +1,14 @@
 import hashlib
 from typing import List
-from crawlers.common import CrawlerBase, NewsHeader
+from crawlers.common import CrawlerBase
+from custom_types import NewsHeader
 import bs4
 import requests
 
 
 class Utsunomiya(CrawlerBase):
     HP_URL = "http://www.tochigi-edu.ed.jp/utsunomiya/nc2/"
-    SCHOOL_NAME = "宇都宮高校"
+    SITE_NAME = "宇都宮高校"
 
     def fetch_recent_news_headers(self) -> List[NewsHeader]:
         fetched_news_header: List[NewsHeader] = []
@@ -24,8 +25,9 @@ class Utsunomiya(CrawlerBase):
         return fetched_news_header
 
     def fetch_specific_news_content(self, news_header: NewsHeader) -> str:
-        res = requests.get(news_header.origin_url)
+        res = requests.get(news_header.content_url)
         soup = bs4.BeautifulSoup(res.text, features="html.parser")
         detail_raw = soup.select_one(".journal_content")
-        detail_raw.br.replace_with("\n")
-        return detail_raw.get_text()
+        for i in detail_raw.select("br"):
+            i.replace_with("\n")
+        return detail_raw.get_text().strip()

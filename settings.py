@@ -1,8 +1,7 @@
-from typing import Type, List
+from typing import cast
 
-from crawlers.common import CrawlerBase
-from loaders import get_all_crawler_classes, load_tokens
+from const_settings import TOKENS_JSON_PATH
+from custom_types import TokenTable
+from utils import load_json_default
 
-CRAWLER_CLASSES: List[Type[CrawlerBase]] = get_all_crawler_classes()
-
-TOKENS = load_tokens()
+TOKEN_TABLE = cast(TokenTable, load_json_default(TOKENS_JSON_PATH))

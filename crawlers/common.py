@@ -1,25 +1,14 @@
 from abc import ABCMeta, abstractmethod
-from dataclasses import dataclass
-from typing import List
+from functools import lru_cache
+from typing import List, Type, cast
 
-import jaconv
-
-
-@dataclass
-class NewsHeader:
-    origin_url: str
-    title: str
-    hash: str
-
-
-@dataclass
-class News(NewsHeader):
-    content: str
+from custom_types import NewsHeader, News
+from utils import get_all_classes_from_package, pretty_text
 
 
 class CrawlerBase(metaclass=ABCMeta):
     HP_URL: str
-    SCHOOL_NAME: str
+    SITE_NAME: str
 
     @abstractmethod
     def fetch_recent_news_headers(self) -> List[NewsHeader]:
@@ -36,13 +25,24 @@ class CrawlerBase(metaclass=ABCMeta):
         :return: List of before uncrawled news.
         """
         ret: List[News] = []
-        for header in filter(lambda x: not x.hash in cached_hashes, self.fetch_recent_news_headers()):
+        for header in filter(lambda x: x.hash not in cached_hashes, self.fetch_recent_news_headers()):
             raw_content = self.fetch_specific_news_content(header)
             news = News(
-                title=jaconv.zen2han(header.title, digit=True, ascii=True, kana=False),
-                content=jaconv.zen2han(raw_content, digit=True, ascii=True, kana=False),
-                origin_url=header.origin_url,
+                site_name=self.SITE_NAME,
+                title=pretty_text(header.title),
+                content=pretty_text(raw_content),
+                content_url=header.content_url,
                 hash=header.hash
             )
             ret.append(news)
         return ret
+
+
+@lru_cache
+def get_all_crawler_classes() -> List[Type[CrawlerBase]]:
+    import crawlers
+    import crawlers.sites
+    return cast(List[Type[CrawlerBase]], get_all_classes_from_package(
+        crawlers.sites.__name__,
+        lambda c: crawlers.common.CrawlerBase in c.__bases__
+    ))
